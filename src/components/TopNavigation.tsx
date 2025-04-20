@@ -1,8 +1,33 @@
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { WatchaLogo } from "../assets/logo";
+import styled from "styled-components";
+import { useState } from "react";
+
+const StyledListItem = styled.li<{ isActive: boolean }>`
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 400;
+  color: ${(props) => (props.isActive ? "#ffffff" : "#84868d")};
+  cursor: pointer;
+  border-bottom: ${(props) =>
+    props.isActive ? "2px solid #ffffff" : "2px solid transparent"};
+
+  &:hover {
+    border-bottom: ${(props) =>
+      props.isActive ? "2px solid #ffffff" : "2px solid #84868d"};
+  }
+`;
 
 export const TopNavigation = () => {
+  const [menu, setMenu] = useState("개별 구매");
+
+  const handleMenuClick = (e: React.MouseEvent<HTMLUListElement>) => {
+    const target = e.target as HTMLLIElement;
+    const selectedMenu = target.innerText;
+    setMenu(selectedMenu);
+  };
+
   return (
     <div
       style={{
@@ -15,7 +40,6 @@ export const TopNavigation = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          padding: "10px",
         }}
       >
         <WatchaLogo />
@@ -26,47 +50,16 @@ export const TopNavigation = () => {
               margin: 0,
               padding: 0,
             }}
+            onClick={(e) => handleMenuClick(e)}
           >
-            <li
-              style={{
-                padding: "16px",
-                fontSize: "16px",
-                fontWeight: 400,
-                color: "#84868D",
-              }}
-            >
-              구독
-            </li>
-            <li
-              style={{
-                padding: "16px",
-                fontSize: "16px",
-                fontWeight: 400,
-                color: "#84868D",
-              }}
-            >
+            <StyledListItem isActive={menu === "구독"}>구독</StyledListItem>
+            <StyledListItem isActive={menu === "개별 구매"}>
               개별 구매
-            </li>
-            <li
-              style={{
-                padding: "16px",
-                fontSize: "16px",
-                fontWeight: 400,
-                color: "#84868D",
-              }}
-            >
-              웹툰
-            </li>
-            <li
-              style={{
-                padding: "16px",
-                fontSize: "16px",
-                fontWeight: 400,
-                color: "#84868D",
-              }}
-            >
+            </StyledListItem>
+            <StyledListItem isActive={menu === "웹툰"}>웹툰</StyledListItem>
+            <StyledListItem isActive={menu === "왓챠피티"}>
               왓챠피티
-            </li>
+            </StyledListItem>
           </ul>
         </nav>
       </div>
