@@ -1,25 +1,10 @@
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { WatchaLogo } from "../assets/logo";
-import styled from "styled-components";
 import { useState } from "react";
+import { TopTabs } from "./TopTabs";
 
-const StyledListItem = styled.li<{ isActive: boolean }>`
-  padding: 16px;
-  font-size: 16px;
-  font-weight: 400;
-  color: ${(props) => (props.isActive ? "#ffffff" : "#84868d")};
-  cursor: pointer;
-  border-bottom: ${(props) =>
-    props.isActive ? "2px solid #ffffff" : "2px solid transparent"};
-
-  &:hover {
-    border-bottom: ${(props) =>
-      props.isActive ? "2px solid #ffffff" : "2px solid #84868d"};
-  }
-`;
-
-export const TopNavigation = () => {
+export const TopHeader = () => {
   const [menu, setMenu] = useState("개별 구매");
 
   const handleMenuClick = (e: React.MouseEvent<HTMLUListElement>) => {
@@ -43,25 +28,11 @@ export const TopNavigation = () => {
         }}
       >
         <WatchaLogo />
-        <nav style={{ marginLeft: "20px" }}>
-          <ul
-            style={{
-              display: "flex",
-              margin: 0,
-              padding: 0,
-            }}
-            onClick={(e) => handleMenuClick(e)}
-          >
-            <StyledListItem isActive={menu === "구독"}>구독</StyledListItem>
-            <StyledListItem isActive={menu === "개별 구매"}>
-              개별 구매
-            </StyledListItem>
-            <StyledListItem isActive={menu === "웹툰"}>웹툰</StyledListItem>
-            <StyledListItem isActive={menu === "왓챠피티"}>
-              왓챠피티
-            </StyledListItem>
-          </ul>
-        </nav>
+        <TopTabs
+          menus={["구독", "개별 구매", "웹툰", "왓챠피티"]}
+          selectedMenu={menu}
+          onMenuClick={handleMenuClick}
+        />
       </div>
       <div
         style={{

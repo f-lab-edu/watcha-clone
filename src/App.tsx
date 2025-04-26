@@ -1,13 +1,26 @@
-import { TopNavigation } from "./components/TopNavigation";
+import { TopHeader } from "./components/TopHeader";
 import ImageSlider from "./components/ImageSlider";
-
-const urls = [
-  "https://cdn.newstof.com/news/photo/202303/20152_20196_3216.jpg",
-  "https://img.khan.co.kr/news/2024/03/23/news-p.v1.20240323.c159a4cab6f64473adf462d873e01e43_P1.webp",
-  "https://images.mypetlife.co.kr/content/uploads/2021/10/19151330/corgi-g1a1774f95_1280.jpg",
-];
+import { useEffect, useState } from "react";
+import { tmdbAPI } from "./apis/fetchPopularMovies";
+import { Movie } from "./types/Movie";
 
 function App() {
+  const [movieList, setMovieList] = useState<Movie[]>([]);
+
+  const fetchPopularMovies = async () => {
+    try {
+      const response = await tmdbAPI.fetchPopularMovies();
+      console.log(response.results);
+      setMovieList(response.results);
+    } catch (error) {
+      console.error("Error fetching popular movies:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPopularMovies();
+  }, []);
+
   return (
     <div
       style={{
@@ -17,7 +30,7 @@ function App() {
         height: "100vh",
       }}
     >
-      <TopNavigation />
+      <TopHeader />
       <main
         style={{
           margin: "0 auto",
@@ -26,7 +39,7 @@ function App() {
         }}
       >
         <div>
-          <ImageSlider urls={urls} />
+          <ImageSlider urls={movieList.map((movie) => movie.poster_path)} />
         </div>
       </main>
     </div>
