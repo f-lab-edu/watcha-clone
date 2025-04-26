@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { ImagePathForOriginal } from "../constants/ImagePath";
 
 type ImageSliderProps = {
   urls: string[];
@@ -15,11 +16,8 @@ const ImageSlider = ({ urls }: ImageSliderProps) => {
   const calculateTranslatePercent = () => {
     if (ulListRef.current && firstImageRef.current) {
       const ulListWidth = ulListRef.current.clientWidth - 20;
-
       const firstImageWidth = firstImageRef.current.clientWidth;
-
       const imageRatio = (firstImageWidth / ulListWidth) * 100;
-
       setTranslatePercent(imageRatio);
     }
   };
@@ -159,8 +157,7 @@ const ImageSlider = ({ urls }: ImageSliderProps) => {
                   }}
                 >
                   <img
-                    src={url}
-                    alt={`Slide ${index + 1}`}
+                    src={`${ImagePathForOriginal}${url}`}
                     style={{
                       position: "absolute",
                       inset: 0,
