@@ -1,11 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
+const { merge } = require('webpack-merge');
 
-module.exports = {
+// 공통 설정
+const commonConfig = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.[contenthash].js',
+    clean: true,
   },
   module: {
     rules: [
@@ -16,10 +21,6 @@ module.exports = {
           loader: 'babel-loader',
         }
       },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      }
     ]
   },
   resolve: {
@@ -28,11 +29,61 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html'
+    }),
+    new Dotenv({
+      path: `./.env.${process.env.NODE_ENV}`
     })
   ],
+};
+
+// 개발 환경 설정
+const developmentConfig = {
+  mode: 'development',
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  },
+  devtool: 'eval-source-map',
   devServer: {
     port: 3000,
     hot: true,
     open: true
   }
+};
+
+// 운영 환경 설정
+const productionConfig = {
+  mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      }
+    ]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'styles.[contenthash].css',
+    })
+  ],
+  optimization: {
+    minimize: true,
+    splitChunks: {
+      chunks: 'all',
+    }
+  }
+};
+
+// 실행 환경에 따라 설정 병합
+module.exports = (env) => {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  return merge(
+    commonConfig,
+    isDevelopment ? developmentConfig : productionConfig
+  );
 };
