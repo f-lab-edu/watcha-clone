@@ -12,7 +12,7 @@ const API_OPTIONS = {
 };
 
 export const tmdbRequest = async (endpoint: string) => {
-  const url = `${TMDB_BASE_URL}${endpoint}`;
+  const url = `${TMDB_BASE_URL}${endpoint}?language=ko-KR`;
 
   const response = await fetch(url, API_OPTIONS);
 
@@ -23,14 +23,9 @@ export const tmdbRequest = async (endpoint: string) => {
   return response.json();
 };
 
-export function useTmdbQuery<T>(
-  queryKey: any[],
-  endpoint: string,
-  options = {}
-) {
+export function useTmdbQuery<T>(queryKey: any[], endpoint: string) {
   return useQuery<T>({
     queryKey,
     queryFn: () => tmdbRequest(endpoint),
-    ...options,
   });
 }

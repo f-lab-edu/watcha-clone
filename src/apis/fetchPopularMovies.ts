@@ -11,10 +11,7 @@ export type MovieResponse = {
 export const usePopularMovies = () => {
   const query = useTmdbQuery<MovieResponse>(
     ["popularMovies"],
-    "/movie/popular",
-    {
-      language: "ko-KR",
-    }
+    "/movie/popular"
   );
 
   return {
