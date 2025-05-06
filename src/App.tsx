@@ -1,25 +1,11 @@
 import { TopHeader } from "./components/TopHeader";
 import ImageSlider from "./components/ImageSlider";
-import { useEffect, useState } from "react";
-import { tmdbAPI } from "./apis/fetchPopularMovies";
-import { Movie } from "./types/Movie";
+import { usePopularMovies } from "./apis/fetchPopularMovies";
 
 function App() {
-  const [movieList, setMovieList] = useState<Movie[]>([]);
+  const { data: movies, isLoading } = usePopularMovies();
 
-  const fetchPopularMovies = async () => {
-    try {
-      const response = await tmdbAPI.fetchPopularMovies();
-      console.log(response.results);
-      setMovieList(response.results);
-    } catch (error) {
-      console.error("Error fetching popular movies:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPopularMovies();
-  }, []);
+  console.log(movies);
 
   return (
     <div
@@ -39,7 +25,13 @@ function App() {
         }}
       >
         <div>
-          <ImageSlider urls={movieList.map((movie) => movie.poster_path)} />
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <ImageSlider
+              urls={movies?.map((movie) => movie.poster_path) || []}
+            />
+          )}
         </div>
       </main>
     </div>
