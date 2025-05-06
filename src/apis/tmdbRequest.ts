@@ -1,4 +1,8 @@
-const options = {
+import { useQuery } from "@tanstack/react-query";
+
+const TMDB_BASE_URL = "https://api.themoviedb.org/3";
+
+const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
@@ -7,11 +11,26 @@ const options = {
   },
 };
 
-export const tmdbRequest = async (url: string) => {
-  const response = await fetch(url, options);
+export const tmdbRequest = async (endpoint: string) => {
+  const url = `${TMDB_BASE_URL}${endpoint}`;
+
+  const response = await fetch(url, API_OPTIONS);
+
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(`API 요청 실패: ${response.status}`);
   }
-  const data = await response.json();
-  return data;
+
+  return response.json();
 };
+
+export function useTmdbQuery<T>(
+  queryKey: any[],
+  endpoint: string,
+  options = {}
+) {
+  return useQuery<T>({
+    queryKey,
+    queryFn: () => tmdbRequest(endpoint),
+    ...options,
+  });
+}

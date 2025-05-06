@@ -1,10 +1,24 @@
-import { tmdbRequest } from "./tmdbRequest";
+import { Movie } from "../types/Movie";
+import { useTmdbQuery } from "./tmdbRequest";
 
-const fetchPopularMovies = () => {
-  const url = `https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1`;
-  return tmdbRequest(url);
+export type MovieResponse = {
+  page: number;
+  results: Movie[];
+  total_pages: number;
+  total_results: number;
 };
 
-export const tmdbAPI = {
-  fetchPopularMovies,
+export const usePopularMovies = () => {
+  const query = useTmdbQuery<MovieResponse>(
+    ["popularMovies"],
+    "/movie/popular",
+    {
+      language: "ko-KR",
+    }
+  );
+
+  return {
+    ...query,
+    data: query.data?.results,
+  };
 };
