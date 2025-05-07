@@ -1,6 +1,7 @@
 import { TopHeader } from "./components/TopHeader";
 import ImageSlider from "./components/ImageSlider";
 import { usePopularMovies } from "./apis/fetchPopularMovies";
+import ImageSliderSmall from "./components/ImageSliderSmall";
 
 function App() {
   const { data: movies, isLoading } = usePopularMovies();
@@ -32,6 +33,12 @@ function App() {
               urls={movies?.map((movie) => movie.poster_path) || []}
             />
           )}
+        </div>
+        <div>
+          <ImageSliderSmall
+            title="Popular Movies"
+            urls={movies?.map((movie) => movie.poster_path) || []}
+          />
         </div>
       </main>
     </div>
