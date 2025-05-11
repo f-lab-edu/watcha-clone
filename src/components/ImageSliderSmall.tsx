@@ -75,7 +75,6 @@ const ImageSliderSmall = ({ title, urls, gap = 12 }: ImageSliderSmallProps) => {
 
   const containerStyle = {
     width: "100%",
-    marginBottom: "32px",
   };
 
   const titleContainerStyle = {

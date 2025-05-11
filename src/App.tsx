@@ -9,14 +9,7 @@ function App() {
   console.log(movies);
 
   return (
-    <div
-      style={{
-        background: "#000000",
-        color: "#FFFFFF",
-        margin: 0,
-        height: "100vh",
-      }}
-    >
+    <div>
       <TopHeader />
       <main
         style={{
