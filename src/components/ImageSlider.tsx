@@ -8,34 +8,25 @@ type ImageSliderProps = {
 
 const ImageSlider = ({ urls }: ImageSliderProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
-  const [translatePercent, setTranslatePercent] = useState(0);
-  const ulListRef = useRef<HTMLUListElement>(null);
-  const firstImageRef = useRef<HTMLLIElement>(null);
+  const [showControls, setShowControls] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const calculateTranslatePercent = () => {
-    if (ulListRef.current && firstImageRef.current) {
-      const ulListWidth = ulListRef.current.clientWidth - 20;
-      const firstImageWidth = firstImageRef.current.clientWidth;
-      const imageRatio = (firstImageWidth / ulListWidth) * 100;
-      setTranslatePercent(imageRatio);
-    }
-  };
+  const aspectRatio = 16 / 9;
+  const desktopMainImageWidth = 980;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      calculateTranslatePercent();
-    }, 100);
-
-    const handleResize = () => {
-      calculateTranslatePercent();
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+        setIsMobile(window.innerWidth < 1280);
+      }
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(timer);
-    };
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
   const handlePrev = () => {
@@ -46,135 +37,119 @@ const ImageSlider = ({ urls }: ImageSliderProps) => {
     setCurrentIndex((prev) => (prev === urls.length - 1 ? 0 : prev + 1));
   };
 
+  const mainImageWidth = isMobile ? containerWidth : desktopMainImageWidth;
+  const mainImageHeight = mainImageWidth / aspectRatio;
+
+  const containerStyle = {
+    position: "relative" as const,
+    width: "100%",
+    overflow: "visible" as const,
+    marginBottom: "40px",
+  };
+
+  const sliderContentStyle = {
+    position: "relative" as const,
+    width: "100%",
+    height: `${mainImageHeight}px`,
+    overflow: "hidden" as const,
+  };
+
+  const imagesContainerStyle = {
+    display: "flex",
+    transition: "transform 400ms cubic-bezier(0.5, 0, 0.1, 1) 0s",
+    transform: `translateX(-${currentIndex * mainImageWidth}px)`,
+    height: "100%",
+  };
+
+  const mainImageStyle = {
+    flexShrink: 0 as const,
+    width: `${mainImageWidth}px`,
+    height: "100%",
+    position: "relative" as const,
+    padding: isMobile ? "0" : "0 10px 0 0",
+  };
+
+  const imageStyle = {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover" as const,
+    borderRadius: "8px",
+  };
+
+  const buttonBaseStyle = {
+    position: "absolute" as const,
+    top: "50%",
+    transform: "translateY(-50%)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    color: "white",
+    border: "none",
+    borderRadius: "50%",
+    width: "40px",
+    height: "40px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    zIndex: 10,
+    opacity: showControls ? 1 : 0,
+    transition: "opacity 150ms",
+  };
+
+  const leftButtonStyle = {
+    ...buttonBaseStyle,
+    left: "10px",
+    display: currentIndex > 0 ? "flex" : "none",
+  };
+
+  const rightButtonStyle = {
+    ...buttonBaseStyle,
+    right: "10px",
+    display: currentIndex < urls.length - 1 ? "flex" : "none",
+  };
+
+  if (!urls || urls.length === 0) {
+    return null;
+  }
+
   return (
-    <section
-      style={{
-        position: "relative",
-        overflow: "hidden",
-      }}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+    <div
+      style={containerStyle}
+      ref={containerRef}
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(false)}
     >
-      {isHovering && (
+      <div style={sliderContentStyle}>
+        <div style={imagesContainerStyle}>
+          {urls.map((url, index) => (
+            <div key={`main-${index}`} style={mainImageStyle}>
+              <img
+                src={`${ImagePathForOriginal}${url}`}
+                style={imageStyle}
+                alt={`슬라이드 이미지 ${index + 1}`}
+              />
+            </div>
+          ))}
+        </div>
+
         <button
+          style={leftButtonStyle}
           onClick={handlePrev}
-          style={{
-            position: "absolute",
-            left: "10px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            color: "white",
-            border: "none",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-            transition: "opacity 0.3s",
-          }}
+          disabled={currentIndex === 0}
+          aria-label="이전 이미지"
         >
           <IoIosArrowBack size={24} />
         </button>
-      )}
 
-      {isHovering && (
         <button
+          style={rightButtonStyle}
           onClick={handleNext}
-          style={{
-            position: "absolute",
-            right: "10px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            color: "white",
-            border: "none",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-            transition: "opacity 0.3s",
-          }}
+          disabled={currentIndex === urls.length - 1}
+          aria-label="다음 이미지"
         >
           <IoIosArrowForward size={24} />
         </button>
-      )}
-
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          aspectRatio: "16/9",
-          overflow: "hidden",
-        }}
-      >
-        <ul
-          ref={ulListRef}
-          style={{
-            position: "relative",
-            zIndex: 0,
-            margin: "0 20px",
-            whiteSpace: "nowrap",
-            transform: `translate3d(-${currentIndex * translatePercent}%, 0px, 0px)`,
-            transition: "transform 0.4s cubic-bezier(0.5, 0, 0.1, 1) 0s",
-          }}
-        >
-          {urls.map((url, index) => (
-            <li
-              key={index}
-              ref={index === 0 ? firstImageRef : null}
-              style={{
-                width: "100%",
-                maxWidth: "1160px",
-                position: "relative",
-                display: "inline-block",
-                padding: "0 10px",
-                cursor: "pointer",
-                verticalAlign: "top",
-                boxSizing: "border-box",
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  overflow: "hidden",
-                  borderRadius: "8px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    position: "relative",
-                    aspectRatio: "16/9",
-                    margin: 0,
-                  }}
-                >
-                  <img
-                    src={`${ImagePathForOriginal}${url}`}
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      zIndex: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
       </div>
-    </section>
+    </div>
   );
 };
 
