@@ -1,35 +1,22 @@
 import { TopHeader } from "./components/TopHeader";
 import ImageSlider from "./components/ImageSlider";
-import { useEffect, useState } from "react";
-import { tmdbAPI } from "./apis/fetchPopularMovies";
-import { Movie } from "./types/Movie";
+import { usePopularMovies } from "./apis/fetchPopularMovies";
+import ImageSliderSmall from "./components/ImageSliderSmall";
+import ChipList from "./components/ChipList";
+import { useState } from "react";
 
 function App() {
-  const [movieList, setMovieList] = useState<Movie[]>([]);
+  const { data: movies, isLoading } = usePopularMovies();
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const fetchPopularMovies = async () => {
-    try {
-      const response = await tmdbAPI.fetchPopularMovies();
-      console.log(response.results);
-      setMovieList(response.results);
-    } catch (error) {
-      console.error("Error fetching popular movies:", error);
-    }
+  const handleChipClick = (index: number) => {
+    setSelectedIndex(index);
   };
 
-  useEffect(() => {
-    fetchPopularMovies();
-  }, []);
+  console.log(movies);
 
   return (
-    <div
-      style={{
-        background: "#000000",
-        color: "#FFFFFF",
-        margin: 0,
-        height: "100vh",
-      }}
-    >
+    <div>
       <TopHeader />
       <main
         style={{
@@ -38,8 +25,25 @@ function App() {
           padding: "0 20px",
         }}
       >
+        <ChipList
+          chips={["추천", "#왓챠의 발견", "#한국", "#애니메이션", "성인+"]}
+          selectedIndex={selectedIndex}
+          onChipClick={handleChipClick}
+        />
         <div>
-          <ImageSlider urls={movieList.map((movie) => movie.poster_path)} />
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <ImageSlider
+              urls={movies?.map((movie) => movie.poster_path) || []}
+            />
+          )}
+        </div>
+        <div>
+          <ImageSliderSmall
+            title="Popular Movies"
+            urls={movies?.map((movie) => movie.poster_path) || []}
+          />
         </div>
       </main>
     </div>
