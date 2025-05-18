@@ -21,6 +21,7 @@
   "homepage": "https://github.com/f-lab-edu/watcha-clone#readme",
   "dependencies": {
     "@tanstack/react-query": "^5.75.4",
+    "fork-ts-checker-webpack-plugin": "^9.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
