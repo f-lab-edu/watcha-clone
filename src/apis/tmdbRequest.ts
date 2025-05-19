@@ -1,7 +1,6 @@
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 const API_OPTIONS = {
-  method: "GET",
   headers: {
     accept: "application/json",
     Authorization:
@@ -12,19 +11,26 @@ const API_OPTIONS = {
 type tmdbRequestType = {
   method: string;
   endpoint: string;
-  queryParams: Record<string, string | number>;
+  queryParams?: string | string[][] | Record<string, string> | URLSearchParams;
   requestBody?: Record<string, unknown>;
 };
 
 export const tmdbRequest = async ({
   method = "GET",
   endpoint,
-  queryParams = {},
+  queryParams = {
+    language: "ko-KR",
+  },
   requestBody,
 }: tmdbRequestType) => {
-  const url = `${TMDB_BASE_URL}${endpoint}?language=ko-KR`;
+  const queryString = new URLSearchParams(queryParams).toString();
+  const url = `${TMDB_BASE_URL}${endpoint}?${queryString}`;
 
-  const response = await fetch(url, API_OPTIONS);
+  const response = await fetch(url, {
+    method,
+    headers: API_OPTIONS.headers,
+    body: requestBody ? JSON.stringify(requestBody) : undefined,
+  });
 
   if (!response.ok) {
     throw new Error(`API 요청 실패: ${response.status}`);
