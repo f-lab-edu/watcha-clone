@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { ImagePathForOriginal } from "../constants/ImagePath";
+import { ImagePathForOriginal } from "@Constants/ImagePath";
 
 type ImageSliderSmallProps = {
   title: string | React.ReactElement;

@@ -1,6 +1,13 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "paths": {
+      "@Apis/*": ["./src/apis/*"],
+      "@Assets/*": ["./src/assets/*"],
+      "@Components/*": ["./src/components/*"],
+      "@Constants/*": ["./src/constants/*"],
+      "@Types/*": ["./src/types/*"],
+    },
     "lib": [
       "dom",
       "dom.iterable",

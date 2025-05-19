@@ -1,4 +1,4 @@
-import { Movie } from "../types/Movie";
+import { Movie } from "@Types/Movie";
 import { useTmdbQuery } from "./tmdbRequest";
 
 export type MovieResponse = {

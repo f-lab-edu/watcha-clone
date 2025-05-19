@@ -24,7 +24,14 @@ const commonConfig = {
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx']
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    alias: {
+      "@Constants": path.resolve(__dirname, 'src/constants/'),
+      "@Types": path.resolve(__dirname, 'src/types/'), 
+      "@Components": path.resolve(__dirname, 'src/components/'),
+      "@Apis": path.resolve(__dirname, 'src/apis/'),
+      "@Assets": path.resolve(__dirname, 'src/assets/'),
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
