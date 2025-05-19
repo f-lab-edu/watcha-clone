@@ -1,5 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 const API_OPTIONS = {
@@ -11,7 +9,19 @@ const API_OPTIONS = {
   },
 };
 
-export const tmdbRequest = async (endpoint: string) => {
+type tmdbRequestType = {
+  method: string;
+  endpoint: string;
+  queryParams: Record<string, string | number>;
+  requestBody?: Record<string, unknown>;
+};
+
+export const tmdbRequest = async ({
+  method = "GET",
+  endpoint,
+  queryParams = {},
+  requestBody,
+}: tmdbRequestType) => {
   const url = `${TMDB_BASE_URL}${endpoint}?language=ko-KR`;
 
   const response = await fetch(url, API_OPTIONS);
@@ -22,10 +32,3 @@ export const tmdbRequest = async (endpoint: string) => {
 
   return response.json();
 };
-
-export function useTmdbQuery<T>(queryKey: any[], endpoint: string) {
-  return useQuery<T>({
-    queryKey,
-    queryFn: () => tmdbRequest(endpoint),
-  });
-}

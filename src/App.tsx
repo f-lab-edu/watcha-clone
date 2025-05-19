@@ -1,19 +1,13 @@
 import { TopHeader } from "./components/TopHeader";
 import ImageSlider from "./components/ImageSlider";
-import { usePopularMovies } from "./apis/fetchPopularMovies";
+import { usePopularMoviesQuery } from "./apis/fetchPopularMovies";
 import ImageSliderSmall from "./components/ImageSliderSmall";
 import ChipList from "./components/ChipList";
 import { useState } from "react";
 
 function App() {
-  const { data: movies, isLoading } = usePopularMovies();
+  const { data: movies, isLoading } = usePopularMoviesQuery();
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const handleChipClick = (index: number) => {
-    setSelectedIndex(index);
-  };
-
-  console.log(movies);
 
   return (
     <div>
@@ -28,7 +22,7 @@ function App() {
         <ChipList
           chips={["추천", "#왓챠의 발견", "#한국", "#애니메이션", "성인+"]}
           selectedIndex={selectedIndex}
-          onChipClick={handleChipClick}
+          onChipClick={setSelectedIndex}
         />
         <div>
           {isLoading ? (
