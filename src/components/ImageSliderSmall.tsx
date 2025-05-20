@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
 
+const ASPECT_RATIO = 16 / 9;
+const DEFAULT_IMAGE_WIDTH = 290;
+
 type ImageSliderSmallProps = {
   title: string | React.ReactElement;
   urls: string[];
@@ -18,8 +21,6 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   const [containerWidth, setContainerWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const aspectRatio = 16 / 9;
-  const defaultImageWidth = 290;
   const calculateVisibleItems = () => {
     if (!containerWidth) return 5;
 
@@ -28,7 +29,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
     }
 
     const fullVisibleItems = Math.floor(
-      (containerWidth + gap) / (defaultImageWidth + gap)
+      (containerWidth + gap) / (DEFAULT_IMAGE_WIDTH + gap)
     );
     return fullVisibleItems;
   };
@@ -63,10 +64,10 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   };
 
   const calculateItemWidth = () => {
-    if (!containerWidth) return defaultImageWidth;
+    if (!containerWidth) return DEFAULT_IMAGE_WIDTH;
 
     if (containerWidth > 970) {
-      return defaultImageWidth;
+      return DEFAULT_IMAGE_WIDTH;
     }
 
     const visibleItems = 3;
@@ -75,7 +76,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   };
 
   const itemWidth = calculateItemWidth();
-  const itemHeight = itemWidth / aspectRatio;
+  const itemHeight = itemWidth / ASPECT_RATIO;
 
   const containerStyle = {
     width: "100%",

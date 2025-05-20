@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
+
+const ASPECT_RATIO = 16 / 9;
+const DESKTOP_MAIN_IMAGE_WIDTH = 980;
 
 type ImageSliderProps = {
   urls: string[];
@@ -11,22 +14,26 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
   const [showControls, setShowControls] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const resizeListenerRef = useRef<(() => void) | null>(null);
 
-  const aspectRatio = 16 / 9;
-  const desktopMainImageWidth = 980;
+  const containerCallbackRef = useCallback((node: HTMLDivElement | null) => {
+    if (resizeListenerRef.current) {
+      window.removeEventListener("resize", resizeListenerRef.current);
+      resizeListenerRef.current = null;
+    }
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
+    if (node) {
+      setContainerWidth(node.offsetWidth);
+      setIsMobile(window.innerWidth < 1280);
+
+      const updateDimensions = () => {
+        setContainerWidth(node.offsetWidth);
         setIsMobile(window.innerWidth < 1280);
-      }
-    };
+      };
 
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
+      window.addEventListener("resize", updateDimensions);
+      resizeListenerRef.current = updateDimensions;
+    }
   }, []);
 
   const handlePrev = () => {
@@ -37,8 +44,8 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
     setCurrentIndex((prev) => (prev === urls.length - 1 ? 0 : prev + 1));
   };
 
-  const mainImageWidth = isMobile ? containerWidth : desktopMainImageWidth;
-  const mainImageHeight = mainImageWidth / aspectRatio;
+  const mainImageWidth = isMobile ? containerWidth : DESKTOP_MAIN_IMAGE_WIDTH;
+  const mainImageHeight = mainImageWidth / ASPECT_RATIO;
 
   const containerStyle = {
     position: "relative" as const,
@@ -114,7 +121,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
   return (
     <div
       style={containerStyle}
-      ref={containerRef}
+      ref={containerCallbackRef}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
