@@ -1,6 +1,6 @@
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
-import { WatchaLogo } from "../assets/logo";
+import { WatchaLogo } from "@Assets/logo";
 import { useState } from "react";
 import { TopTabs } from "./TopTabs";
 
