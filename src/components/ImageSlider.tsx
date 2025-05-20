@@ -14,26 +14,23 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
   const [showControls, setShowControls] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const resizeListenerRef = useRef<(() => void) | null>(null);
 
   const containerCallbackRef = useCallback((node: HTMLDivElement | null) => {
-    if (resizeListenerRef.current) {
-      window.removeEventListener("resize", resizeListenerRef.current);
-      resizeListenerRef.current = null;
-    }
+    if (!node) return;
 
-    if (node) {
+    setContainerWidth(node.offsetWidth);
+    setIsMobile(window.innerWidth < 1280);
+
+    const updateDimensions = () => {
       setContainerWidth(node.offsetWidth);
       setIsMobile(window.innerWidth < 1280);
+    };
 
-      const updateDimensions = () => {
-        setContainerWidth(node.offsetWidth);
-        setIsMobile(window.innerWidth < 1280);
-      };
+    window.addEventListener("resize", updateDimensions);
 
-      window.addEventListener("resize", updateDimensions);
-      resizeListenerRef.current = updateDimensions;
-    }
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    };
   }, []);
 
   const handlePrev = () => {
