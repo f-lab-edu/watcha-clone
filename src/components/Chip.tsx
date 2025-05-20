@@ -20,7 +20,7 @@ const StyledChip = styled.button<{ selected?: boolean }>`
   cursor: pointer;
 `;
 
-const Chip = ({ children, selected, onClick }: ChipProps) => {
+const Chip: React.FC<ChipProps> = ({ children, selected, onClick }) => {
   return (
     <StyledChip selected={selected} onClick={onClick}>
       {children}

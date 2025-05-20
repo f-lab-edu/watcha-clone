@@ -21,7 +21,11 @@ type TopTabsProps = {
   onMenuClick: (menu: React.MouseEvent<HTMLUListElement>) => void;
 };
 
-export const TopTabs = ({ menus, selectedMenu, onMenuClick }: TopTabsProps) => {
+export const TopTabs: React.FC<TopTabsProps> = ({
+  menus,
+  selectedMenu,
+  onMenuClick,
+}) => {
   return (
     <nav style={{ marginLeft: "20px" }}>
       <ul

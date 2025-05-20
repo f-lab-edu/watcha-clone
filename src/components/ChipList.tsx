@@ -6,7 +6,11 @@ type ChipListProps = {
   onChipClick?: (index: number) => void;
 };
 
-const ChipList = ({ chips, selectedIndex, onChipClick }: ChipListProps) => {
+const ChipList: React.FC<ChipListProps> = ({
+  chips,
+  selectedIndex,
+  onChipClick,
+}) => {
   return (
     <div style={{ display: "flex" }}>
       {chips.map((label, idx) => (

@@ -8,7 +8,11 @@ type ImageSliderSmallProps = {
   gap?: number;
 };
 
-const ImageSliderSmall = ({ title, urls, gap = 12 }: ImageSliderSmallProps) => {
+const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
+  title,
+  urls,
+  gap = 12,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);

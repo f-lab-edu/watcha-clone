@@ -6,7 +6,7 @@ type ImageSliderProps = {
   urls: string[];
 };
 
-const ImageSlider = ({ urls }: ImageSliderProps) => {
+const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
