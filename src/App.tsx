@@ -6,7 +6,7 @@ import ChipList from "./components/ChipList";
 import { useState } from "react";
 
 function App() {
-  const { data: movies, isLoading } = usePopularMoviesQuery();
+  const { data: movies } = usePopularMoviesQuery();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
@@ -25,13 +25,7 @@ function App() {
           onChipClick={setSelectedIndex}
         />
         <div>
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            <ImageSlider
-              urls={movies?.map((movie) => movie.poster_path) || []}
-            />
-          )}
+          <ImageSlider urls={movies?.map((movie) => movie.poster_path) || []} />
         </div>
         <div>
           <ImageSliderSmall
