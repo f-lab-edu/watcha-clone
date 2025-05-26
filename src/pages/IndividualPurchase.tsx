@@ -25,13 +25,10 @@ const IndividualPurchase = () => {
           onChipClick={setSelectedIndex}
         />
         <div>
-          <ImageSlider urls={movies?.map((movie) => movie.poster_path) || []} />
+          <ImageSlider movies={movies} />
         </div>
         <div>
-          <ImageSliderSmall
-            title="Popular Movies"
-            urls={movies?.map((movie) => movie.poster_path) || []}
-          />
+          <ImageSliderSmall title="Popular Movies" movies={movies} />
         </div>
       </main>
     </div>

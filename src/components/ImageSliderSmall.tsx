@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
+import { Movie } from "@Types/Movie";
 
 const ASPECT_RATIO = 16 / 9;
 const DEFAULT_IMAGE_WIDTH = 290;
@@ -66,13 +67,13 @@ const rightButtonBaseStyle = {
 
 type ImageSliderSmallProps = {
   title: string | React.ReactElement;
-  urls: string[];
+  movies: Movie[];
   gap?: number;
 };
 
 const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   title,
-  urls,
+  movies,
   gap = 12,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -119,7 +120,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => {
-      const maxIndex = urls.length - visibleItems;
+      const maxIndex = movies.length - visibleItems;
       const newIndex = prevIndex + visibleItems;
       return newIndex >= maxIndex ? maxIndex : newIndex;
     });
@@ -152,7 +153,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
     borderRadius: "8px",
     width: `${itemWidth}px`,
     height: `${itemHeight}px`,
-    marginRight: index < urls.length - 1 ? `${gap}px` : "0px",
+    marginRight: index < movies.length - 1 ? `${gap}px` : "0px",
   });
 
   const leftButtonStyle = {
@@ -164,7 +165,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   const rightButtonStyle = {
     ...rightButtonBaseStyle,
     opacity: showControls ? 1 : 0,
-    display: currentIndex < urls.length - visibleItems ? "block" : "none",
+    display: currentIndex < movies.length - visibleItems ? "block" : "none",
   };
 
   return (
@@ -184,11 +185,14 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
         ref={containerCallbackRef}
       >
         <div style={imagesContainerStyle}>
-          {urls.map((image, index) => (
-            <div key={`${image}_${index}`} style={imageItemStyle(index)}>
-              <a href={image} style={imageLinkStyle}>
+          {movies.map((movie, index) => (
+            <div
+              key={`${movie.poster_path}_${index}`}
+              style={imageItemStyle(index)}
+            >
+              <a href={movie.poster_path} style={imageLinkStyle}>
                 <img
-                  src={`${ImagePathForOriginal}${image}`}
+                  src={`${ImagePathForOriginal}${movie.poster_path}`}
                   style={imageStyle}
                   alt={`슬라이드 이미지 ${index + 1}`}
                 />
@@ -208,7 +212,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
         <button
           style={rightButtonStyle}
           onClick={handleNext}
-          disabled={currentIndex >= urls.length - visibleItems}
+          disabled={currentIndex >= movies.length - visibleItems}
           aria-label="다음 이미지"
         >
           <IoIosArrowForward size={24} />
