@@ -5,6 +5,65 @@ import { ImagePathForOriginal } from "@Constants/ImagePath";
 const ASPECT_RATIO = 16 / 9;
 const DEFAULT_IMAGE_WIDTH = 290;
 
+const containerStyle = {
+  width: "100%",
+};
+
+const titleContainerStyle = {
+  marginBottom: "16px",
+};
+
+const titleStyle = {
+  fontSize: "20px",
+  fontWeight: "bold",
+};
+
+const sliderContainerStyle = {
+  position: "relative",
+  width: "100%",
+  overflow: "hidden",
+} as const;
+
+const imageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  transition: "opacity 150ms",
+} as const;
+
+const imageLinkStyle = {
+  display: "block",
+  width: "100%",
+  height: "100%",
+};
+
+const buttonBaseStyle = {
+  position: "absolute",
+  top: "50%",
+  transform: "translateY(-50%)",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  color: "white",
+  padding: "8px",
+  zIndex: 10,
+  border: "none",
+  cursor: "pointer",
+  transition: "opacity 150ms",
+} as const;
+
+const leftButtonBaseStyle = {
+  ...buttonBaseStyle,
+  left: "0",
+  borderTopRightRadius: "8px",
+  borderBottomRightRadius: "8px",
+} as const;
+
+const rightButtonBaseStyle = {
+  ...buttonBaseStyle,
+  right: "0",
+  borderTopLeftRadius: "8px",
+  borderBottomLeftRadius: "8px",
+} as const;
+
 type ImageSliderSmallProps = {
   title: string | React.ReactElement;
   urls: string[];
@@ -81,25 +140,6 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   const itemWidth = calculateItemWidth();
   const itemHeight = itemWidth / ASPECT_RATIO;
 
-  const containerStyle = {
-    width: "100%",
-  };
-
-  const titleContainerStyle = {
-    marginBottom: "16px",
-  };
-
-  const titleStyle = {
-    fontSize: "20px",
-    fontWeight: "bold",
-  };
-
-  const sliderContainerStyle = {
-    position: "relative",
-    width: "100%",
-    overflow: "hidden",
-  } as const;
-
   const imagesContainerStyle = {
     display: "flex",
     transition: "transform 300ms ease-in-out",
@@ -115,42 +155,17 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
     marginRight: index < urls.length - 1 ? `${gap}px` : "0px",
   });
 
-  const imageStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    transition: "opacity 150ms",
-  } as const;
-
-  const buttonBaseStyle = {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    padding: "8px",
-    zIndex: 10,
-    border: "none",
-    cursor: "pointer",
-    opacity: showControls ? 1 : 0,
-    transition: "opacity 150ms",
-  } as const;
-
   const leftButtonStyle = {
-    ...buttonBaseStyle,
-    left: "0",
-    borderTopRightRadius: "8px",
-    borderBottomRightRadius: "8px",
+    ...leftButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
     display: currentIndex > 0 ? "block" : "none",
-  } as const;
+  };
 
   const rightButtonStyle = {
-    ...buttonBaseStyle,
-    right: "0",
-    borderTopLeftRadius: "8px",
-    borderBottomLeftRadius: "8px",
+    ...rightButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
     display: currentIndex < urls.length - visibleItems ? "block" : "none",
-  } as const;
+  };
 
   return (
     <div style={containerStyle}>
@@ -171,13 +186,11 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
         <div style={imagesContainerStyle}>
           {urls.map((image, index) => (
             <div key={`${image}_${index}`} style={imageItemStyle(index)}>
-              <a
-                href={image}
-                style={{ display: "block", width: "100%", height: "100%" }}
-              >
+              <a href={image} style={imageLinkStyle}>
                 <img
                   src={`${ImagePathForOriginal}${image}`}
                   style={imageStyle}
+                  alt={`슬라이드 이미지 ${index + 1}`}
                 />
               </a>
             </div>
@@ -192,7 +205,6 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
           <IoIosArrowBack size={24} />
         </button>
 
-        {/* 우측 화살표 */}
         <button
           style={rightButtonStyle}
           onClick={handleNext}

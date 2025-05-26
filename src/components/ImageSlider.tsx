@@ -5,6 +5,55 @@ import { ImagePathForOriginal } from "@Constants/ImagePath";
 const ASPECT_RATIO = 16 / 9;
 const DESKTOP_MAIN_IMAGE_WIDTH = 980;
 
+const containerStyle = {
+  position: "relative" as const,
+  width: "100%",
+  overflow: "visible" as const,
+  marginBottom: "40px",
+};
+
+const sliderContentStyle = {
+  position: "relative" as const,
+  width: "100%",
+  height: "auto",
+  overflow: "hidden" as const,
+};
+
+const imageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover" as const,
+  borderRadius: "8px",
+};
+
+const buttonBaseStyle = {
+  position: "absolute" as const,
+  top: "50%",
+  transform: "translateY(-50%)",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  color: "white",
+  border: "none",
+  borderRadius: "50%",
+  width: "40px",
+  height: "40px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  cursor: "pointer",
+  zIndex: 10,
+  transition: "opacity 150ms",
+};
+
+const leftButtonBaseStyle = {
+  ...buttonBaseStyle,
+  left: "10px",
+};
+
+const rightButtonBaseStyle = {
+  ...buttonBaseStyle,
+  right: "10px",
+};
+
 type ImageSliderProps = {
   urls: string[];
 };
@@ -44,18 +93,9 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
   const mainImageWidth = isMobile ? containerWidth : DESKTOP_MAIN_IMAGE_WIDTH;
   const mainImageHeight = mainImageWidth / ASPECT_RATIO;
 
-  const containerStyle = {
-    position: "relative" as const,
-    width: "100%",
-    overflow: "visible" as const,
-    marginBottom: "40px",
-  };
-
-  const sliderContentStyle = {
-    position: "relative" as const,
-    width: "100%",
+  const sliderContentStyleWithHeight = {
+    ...sliderContentStyle,
     height: `${mainImageHeight}px`,
-    overflow: "hidden" as const,
   };
 
   const imagesContainerStyle = {
@@ -73,41 +113,15 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
     padding: isMobile ? "0" : "0 10px 0 0",
   };
 
-  const imageStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover" as const,
-    borderRadius: "8px",
-  };
-
-  const buttonBaseStyle = {
-    position: "absolute" as const,
-    top: "50%",
-    transform: "translateY(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    border: "none",
-    borderRadius: "50%",
-    width: "40px",
-    height: "40px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    zIndex: 10,
-    opacity: showControls ? 1 : 0,
-    transition: "opacity 150ms",
-  };
-
   const leftButtonStyle = {
-    ...buttonBaseStyle,
-    left: "10px",
+    ...leftButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
     display: currentIndex > 0 ? "flex" : "none",
   };
 
   const rightButtonStyle = {
-    ...buttonBaseStyle,
-    right: "10px",
+    ...rightButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
     display: currentIndex < urls.length - 1 ? "flex" : "none",
   };
 
@@ -122,7 +136,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div style={sliderContentStyle}>
+      <div style={sliderContentStyleWithHeight}>
         <div style={imagesContainerStyle}>
           {urls.map((url, index) => (
             <div key={`main-${index}`} style={mainImageStyle}>
