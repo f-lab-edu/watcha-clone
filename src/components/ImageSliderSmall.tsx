@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
 
@@ -19,7 +19,22 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const containerCallbackRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+
+    setContainerWidth(node.offsetWidth);
+
+    const updateDimensions = () => {
+      setContainerWidth(node.offsetWidth);
+    };
+
+    window.addEventListener("resize", updateDimensions);
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    };
+  }, []);
 
   const calculateVisibleItems = () => {
     if (!containerWidth) return 5;
@@ -35,18 +50,6 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   };
 
   const visibleItems = calculateVisibleItems();
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
-      }
-    };
-
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => {
@@ -163,7 +166,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
         style={sliderContainerStyle}
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={() => setShowControls(false)}
-        ref={containerRef}
+        ref={containerCallbackRef}
       >
         <div style={imagesContainerStyle}>
           {urls.map((image, index) => (
