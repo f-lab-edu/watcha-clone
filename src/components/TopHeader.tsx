@@ -3,9 +3,12 @@ import { CiSearch } from "react-icons/ci";
 import { WatchaLogo } from "@Assets/logo";
 import { useState } from "react";
 import { TopTabs } from "./TopTabs";
+import useSearchInput from "../hooks/useSearchInput";
 
 export const TopHeader = () => {
   const [menu, setMenu] = useState("개별 구매");
+  const { searchInput, handleSearchInputClick, handleSearchInputChange } =
+    useSearchInput();
 
   const handleMenuClick = (e: React.MouseEvent<HTMLUListElement>) => {
     const target = e.target as HTMLLIElement;
@@ -58,11 +61,15 @@ export const TopHeader = () => {
           <input
             type="text"
             placeholder="콘텐츠, 태그 , 인물, 리스트 검색"
+            value={searchInput}
+            onChange={handleSearchInputChange}
+            onClick={handleSearchInputClick}
             style={{
               background: "transparent",
               border: "none",
               fontSize: "15px",
               width: "100%",
+              color: "#FFFFFF",
             }}
           />
         </div>
