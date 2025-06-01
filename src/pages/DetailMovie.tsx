@@ -1,16 +1,16 @@
-import { useEffect } from "react";
+import { useFetchDetailMovie } from "@Apis/fetchDetailMovie";
 import { useParams } from "react-router-dom";
 
 const DetailMovie = () => {
   const { id } = useParams();
+  const { data } = useFetchDetailMovie(id || "");
 
-  useEffect(() => {
-    console.log("Movie ID:", id);
-  }, []);
+  console.log("DetailMovie data", data);
 
   return (
     <div>
       <h1 style={{ color: "red", padding: "20px" }}>Detail Movie Page</h1>
+      {data.overview}
     </div>
   );
 };

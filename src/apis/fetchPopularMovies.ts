@@ -15,7 +15,7 @@ export const usePopularMoviesQuery = () => {
     queryFn: async () => {
       const response = await tmdbRequest({
         method: "GET",
-        endpoint: "/movie/popular",
+        endpoint: "movie/popular",
         queryParams: {},
       });
       if (!response) {

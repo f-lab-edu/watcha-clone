@@ -1,4 +1,4 @@
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
+const TMDB_BASE_URL = "https://api.themoviedb.org/3/";
 
 const API_OPTIONS = {
   headers: {
