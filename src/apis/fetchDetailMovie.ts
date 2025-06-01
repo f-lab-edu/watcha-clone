@@ -9,7 +9,9 @@ export const useFetchDetailMovie = (id: string) => {
       const response = await tmdbRequest({
         method: "GET",
         endpoint: `movie/${id}`,
-        queryParams: {},
+        queryParams: {
+          language: "ko-KR",
+        },
       });
       if (!response) {
         throw new Error("Failed to fetch deatil movie");
