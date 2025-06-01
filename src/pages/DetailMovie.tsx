@@ -1,4 +1,5 @@
 import { useFetchDetailMovie } from "@Apis/fetchDetailMovie";
+import { usePostReviewQuery } from "@Apis/postReview";
 import { useParams } from "react-router-dom";
 
 const DetailMovie = () => {
