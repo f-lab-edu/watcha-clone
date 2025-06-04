@@ -1,4 +1,4 @@
-export type Review = {
+export type CommentType = {
   author: string;
   author_details: {
     name: string;

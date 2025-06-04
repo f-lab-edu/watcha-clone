@@ -1,6 +1,6 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { tmdbRequest } from "./tmdbRequest";
-import { Review } from "@Types/Review";
+import { Review } from "@Types/CommentType";
 import { getSessionId } from "./tmdbAuth";
 
 export type ReviewResponse = {

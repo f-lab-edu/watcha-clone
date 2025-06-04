@@ -1,8 +1,8 @@
 import { usePopularMoviesQuery } from "@Apis/fetchPopularMovies";
-import ChipList from "@Components/ChipList";
-import ImageSlider from "@Components/ImageSlider";
-import ImageSliderSmall from "@Components/ImageSliderSmall";
-import { TopHeader } from "@Components/TopHeader";
+import ChipList from "@Components/commons/ChipList";
+import ImageSlider from "@Components/commons/ImageSlider";
+import ImageSliderSmall from "@Components/commons/ImageSliderSmall";
+import { TopHeader } from "@Components/commons/TopHeader";
 import { useState } from "react";
 
 const IndividualPurchase = () => {

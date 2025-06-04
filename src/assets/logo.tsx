@@ -1,5 +1,3 @@
-import React from "react";
-
 export const WatchaLogo = ({ width = 88, height = 26 }) => {
   return (
     <svg

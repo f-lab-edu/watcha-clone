@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { tmdbRequest } from "./tmdbRequest";
-import { Review } from "@Types/Review";
+import { Review } from "@Types/CommentType";
 
 export type ReviewResponse = {
   id: number;

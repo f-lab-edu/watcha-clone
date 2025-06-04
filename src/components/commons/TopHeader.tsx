@@ -3,7 +3,7 @@ import { CiSearch } from "react-icons/ci";
 import { WatchaLogo } from "@Assets/logo";
 import { useState } from "react";
 import { TopTabs } from "./TopTabs";
-import useSearchInput from "../hooks/useSearchInput";
+import useSearchInput from "../../hooks/useSearchInput";
 
 export const TopHeader = () => {
   const [menu, setMenu] = useState("개별 구매");
