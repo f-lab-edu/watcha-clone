@@ -1,7 +1,28 @@
-import { useState } from "react";
+import { usefetchSearchMovie } from "@Apis/fetchSearchMovie";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const useSearchInput = () => {
   const [searchInput, setSearchInput] = useState<string>("");
+  const [debouncedValue, setDebouncedValue] = useState<string>("");
+  const { data, isLoading, error } = usefetchSearchMovie(debouncedValue);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(searchInput);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchInput]);
+
+  useEffect(() => {
+    if (debouncedValue.trim()) {
+      navigate(`/search?query=${encodeURIComponent(debouncedValue)}`);
+    }
+  }, [debouncedValue, navigate]);
 
   const handleSearchInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -9,14 +30,37 @@ const useSearchInput = () => {
     setSearchInput(event.target.value);
   };
 
-  const handleSearchInputClick = () => {
-    console.log("url 이동");
+  const handleSearch = () => {
+    if (searchInput.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchInput)}`);
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const useSearchResults = (query: string) => {
+    const { data, isLoading, error } = usefetchSearchMovie(query);
+
+    return {
+      data,
+      isLoading,
+      error,
+    };
   };
 
   return {
     searchInput,
+    data,
+    isLoading,
+    error,
     handleSearchInputChange,
-    handleSearchInputClick,
+    handleSearch,
+    handleKeyPress,
+    useSearchResults,
   };
 };
 

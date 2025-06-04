@@ -7,7 +7,7 @@ import useSearchInput from "../../hooks/useSearchInput";
 
 export const TopHeader = () => {
   const [menu, setMenu] = useState("개별 구매");
-  const { searchInput, handleSearchInputClick, handleSearchInputChange } =
+  const { searchInput, handleSearchInputChange, handleSearch, handleKeyPress } =
     useSearchInput();
 
   const handleMenuClick = (e: React.MouseEvent<HTMLUListElement>) => {
@@ -63,7 +63,7 @@ export const TopHeader = () => {
             placeholder="콘텐츠, 태그 , 인물, 리스트 검색"
             value={searchInput}
             onChange={handleSearchInputChange}
-            onClick={handleSearchInputClick}
+            onKeyDown={handleKeyPress}
             style={{
               background: "transparent",
               border: "none",

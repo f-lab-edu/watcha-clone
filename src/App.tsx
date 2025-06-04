@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import IndividualPurchase from "./pages/IndividualPurchase";
 import DetailMovie from "./pages/DetailMovie";
+import SearchList from "./pages/SearchList";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       />
       <Route path="/individual-purchase" element={<IndividualPurchase />} />
       <Route path="/detail-movie/:id" element={<DetailMovie />} />
+      <Route path="/search" element={<SearchList />} />
     </Routes>
   );
 }
