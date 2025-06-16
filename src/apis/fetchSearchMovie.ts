@@ -9,24 +9,27 @@ export type MovieResponse = {
   total_results: number;
 };
 
-export const usePopularMoviesQuery = () => {
+export const usefetchSearchMovie = (title: string) => {
   const query = useSuspenseQuery<MovieResponse>({
-    queryKey: ["popularMovies"],
+    queryKey: ["searchMovie", title],
     queryFn: async () => {
       const response = await tmdbRequest({
         method: "GET",
-        endpoint: "movie/popular",
-        queryParams: {},
+        endpoint: `search/movie`,
+        queryParams: {
+          language: "ko-KR",
+          query: title,
+        },
       });
       if (!response) {
-        throw new Error("Failed to fetch popular movies");
+        throw new Error("Failed to fetch search movie");
       }
-      return response as MovieResponse;
+      return response;
     },
   });
 
   return {
     ...query,
-    data: query.data?.results,
+    data: query.data,
   };
 };

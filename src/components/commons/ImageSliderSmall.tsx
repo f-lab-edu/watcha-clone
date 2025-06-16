@@ -1,25 +1,100 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
+import { Movie } from "@Types/Movie";
 
 const ASPECT_RATIO = 16 / 9;
 const DEFAULT_IMAGE_WIDTH = 290;
 
+const containerStyle = {
+  width: "100%",
+};
+
+const titleContainerStyle = {
+  marginBottom: "16px",
+};
+
+const titleStyle = {
+  fontSize: "20px",
+  fontWeight: "bold",
+};
+
+const sliderContainerStyle = {
+  position: "relative",
+  width: "100%",
+  overflow: "hidden",
+} as const;
+
+const imageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  transition: "opacity 150ms",
+} as const;
+
+const imageLinkStyle = {
+  display: "block",
+  width: "100%",
+  height: "100%",
+};
+
+const buttonBaseStyle = {
+  position: "absolute",
+  top: "50%",
+  transform: "translateY(-50%)",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  color: "white",
+  padding: "8px",
+  zIndex: 10,
+  border: "none",
+  cursor: "pointer",
+  transition: "opacity 150ms",
+} as const;
+
+const leftButtonBaseStyle = {
+  ...buttonBaseStyle,
+  left: "0",
+  borderTopRightRadius: "8px",
+  borderBottomRightRadius: "8px",
+} as const;
+
+const rightButtonBaseStyle = {
+  ...buttonBaseStyle,
+  right: "0",
+  borderTopLeftRadius: "8px",
+  borderBottomLeftRadius: "8px",
+} as const;
+
 type ImageSliderSmallProps = {
   title: string | React.ReactElement;
-  urls: string[];
+  movies: Movie[];
   gap?: number;
 };
 
 const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   title,
-  urls,
+  movies,
   gap = 12,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const containerCallbackRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+
+    setContainerWidth(node.offsetWidth);
+
+    const updateDimensions = () => {
+      setContainerWidth(node.offsetWidth);
+    };
+
+    window.addEventListener("resize", updateDimensions);
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    };
+  }, []);
 
   const calculateVisibleItems = () => {
     if (!containerWidth) return 5;
@@ -36,18 +111,6 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
 
   const visibleItems = calculateVisibleItems();
 
-  useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
-      }
-    };
-
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
-
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => {
       const newIndex = prevIndex - visibleItems;
@@ -57,7 +120,7 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => {
-      const maxIndex = urls.length - visibleItems;
+      const maxIndex = movies.length - visibleItems;
       const newIndex = prevIndex + visibleItems;
       return newIndex >= maxIndex ? maxIndex : newIndex;
     });
@@ -78,25 +141,6 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
   const itemWidth = calculateItemWidth();
   const itemHeight = itemWidth / ASPECT_RATIO;
 
-  const containerStyle = {
-    width: "100%",
-  };
-
-  const titleContainerStyle = {
-    marginBottom: "16px",
-  };
-
-  const titleStyle = {
-    fontSize: "20px",
-    fontWeight: "bold",
-  };
-
-  const sliderContainerStyle = {
-    position: "relative",
-    width: "100%",
-    overflow: "hidden",
-  } as const;
-
   const imagesContainerStyle = {
     display: "flex",
     transition: "transform 300ms ease-in-out",
@@ -109,45 +153,20 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
     borderRadius: "8px",
     width: `${itemWidth}px`,
     height: `${itemHeight}px`,
-    marginRight: index < urls.length - 1 ? `${gap}px` : "0px",
+    marginRight: index < movies.length - 1 ? `${gap}px` : "0px",
   });
 
-  const imageStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    transition: "opacity 150ms",
-  } as const;
-
-  const buttonBaseStyle = {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    padding: "8px",
-    zIndex: 10,
-    border: "none",
-    cursor: "pointer",
-    opacity: showControls ? 1 : 0,
-    transition: "opacity 150ms",
-  } as const;
-
   const leftButtonStyle = {
-    ...buttonBaseStyle,
-    left: "0",
-    borderTopRightRadius: "8px",
-    borderBottomRightRadius: "8px",
+    ...leftButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
     display: currentIndex > 0 ? "block" : "none",
-  } as const;
+  };
 
   const rightButtonStyle = {
-    ...buttonBaseStyle,
-    right: "0",
-    borderTopLeftRadius: "8px",
-    borderBottomLeftRadius: "8px",
-    display: currentIndex < urls.length - visibleItems ? "block" : "none",
-  } as const;
+    ...rightButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
+    display: currentIndex < movies.length - visibleItems ? "block" : "none",
+  };
 
   return (
     <div style={containerStyle}>
@@ -163,18 +182,19 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
         style={sliderContainerStyle}
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={() => setShowControls(false)}
-        ref={containerRef}
+        ref={containerCallbackRef}
       >
         <div style={imagesContainerStyle}>
-          {urls.map((image, index) => (
-            <div key={`${image}_${index}`} style={imageItemStyle(index)}>
-              <a
-                href={image}
-                style={{ display: "block", width: "100%", height: "100%" }}
-              >
+          {movies.map((movie, index) => (
+            <div
+              key={`${movie.poster_path}_${index}`}
+              style={imageItemStyle(index)}
+            >
+              <a href={movie.poster_path} style={imageLinkStyle}>
                 <img
-                  src={`${ImagePathForOriginal}${image}`}
+                  src={`${ImagePathForOriginal}${movie.poster_path}`}
                   style={imageStyle}
+                  alt={`슬라이드 이미지 ${index + 1}`}
                 />
               </a>
             </div>
@@ -189,11 +209,10 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
           <IoIosArrowBack size={24} />
         </button>
 
-        {/* 우측 화살표 */}
         <button
           style={rightButtonStyle}
           onClick={handleNext}
-          disabled={currentIndex >= urls.length - visibleItems}
+          disabled={currentIndex >= movies.length - visibleItems}
           aria-label="다음 이미지"
         >
           <IoIosArrowForward size={24} />

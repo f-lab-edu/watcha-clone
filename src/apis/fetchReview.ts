@@ -1,27 +1,28 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Movie } from "@Types/Movie";
 import { tmdbRequest } from "./tmdbRequest";
+import { Review } from "@Types/CommentType";
 
-export type MovieResponse = {
+export type ReviewResponse = {
+  id: number;
   page: number;
-  results: Movie[];
+  results: Review[];
   total_pages: number;
   total_results: number;
 };
 
-export const usePopularMoviesQuery = () => {
-  const query = useSuspenseQuery<MovieResponse>({
-    queryKey: ["popularMovies"],
+export const useFetchReviewQuery = (id: string) => {
+  const query = useSuspenseQuery<ReviewResponse>({
+    queryKey: ["fetchReview"],
     queryFn: async () => {
       const response = await tmdbRequest({
         method: "GET",
-        endpoint: "movie/popular",
+        endpoint: `movie/${id}/reviews`,
         queryParams: {},
       });
       if (!response) {
-        throw new Error("Failed to fetch popular movies");
+        throw new Error("Failed to fetch reviews");
       }
-      return response as MovieResponse;
+      return response as ReviewResponse;
     },
   });
 

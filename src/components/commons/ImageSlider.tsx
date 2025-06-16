@@ -1,19 +1,71 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
+import { Movie } from "@Types/Movie";
+import { useNavigate } from "react-router-dom";
 
 const ASPECT_RATIO = 16 / 9;
 const DESKTOP_MAIN_IMAGE_WIDTH = 980;
 
-type ImageSliderProps = {
-  urls: string[];
+const containerStyle = {
+  position: "relative" as const,
+  width: "100%",
+  overflow: "visible" as const,
+  marginBottom: "40px",
 };
 
-const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
+const sliderContentStyle = {
+  position: "relative" as const,
+  width: "100%",
+  height: "auto",
+  overflow: "hidden" as const,
+};
+
+const imageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover" as const,
+  borderRadius: "8px",
+};
+
+const buttonBaseStyle = {
+  position: "absolute" as const,
+  top: "50%",
+  transform: "translateY(-50%)",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  color: "white",
+  border: "none",
+  borderRadius: "50%",
+  width: "40px",
+  height: "40px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  cursor: "pointer",
+  zIndex: 10,
+  transition: "opacity 150ms",
+};
+
+const leftButtonBaseStyle = {
+  ...buttonBaseStyle,
+  left: "10px",
+};
+
+const rightButtonBaseStyle = {
+  ...buttonBaseStyle,
+  right: "10px",
+};
+
+type ImageSliderProps = {
+  movies: Movie[];
+};
+
+const ImageSlider: React.FC<ImageSliderProps> = ({ movies }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
 
   const containerCallbackRef = useCallback((node: HTMLDivElement | null) => {
     if (!node) return;
@@ -34,28 +86,19 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
   }, []);
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? urls.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? movies.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === urls.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === movies.length - 1 ? 0 : prev + 1));
   };
 
   const mainImageWidth = isMobile ? containerWidth : DESKTOP_MAIN_IMAGE_WIDTH;
   const mainImageHeight = mainImageWidth / ASPECT_RATIO;
 
-  const containerStyle = {
-    position: "relative" as const,
-    width: "100%",
-    overflow: "visible" as const,
-    marginBottom: "40px",
-  };
-
-  const sliderContentStyle = {
-    position: "relative" as const,
-    width: "100%",
+  const sliderContentStyleWithHeight = {
+    ...sliderContentStyle,
     height: `${mainImageHeight}px`,
-    overflow: "hidden" as const,
   };
 
   const imagesContainerStyle = {
@@ -73,45 +116,19 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
     padding: isMobile ? "0" : "0 10px 0 0",
   };
 
-  const imageStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover" as const,
-    borderRadius: "8px",
-  };
-
-  const buttonBaseStyle = {
-    position: "absolute" as const,
-    top: "50%",
-    transform: "translateY(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    border: "none",
-    borderRadius: "50%",
-    width: "40px",
-    height: "40px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    zIndex: 10,
-    opacity: showControls ? 1 : 0,
-    transition: "opacity 150ms",
-  };
-
   const leftButtonStyle = {
-    ...buttonBaseStyle,
-    left: "10px",
+    ...leftButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
     display: currentIndex > 0 ? "flex" : "none",
   };
 
   const rightButtonStyle = {
-    ...buttonBaseStyle,
-    right: "10px",
-    display: currentIndex < urls.length - 1 ? "flex" : "none",
+    ...rightButtonBaseStyle,
+    opacity: showControls ? 1 : 0,
+    display: currentIndex < movies.length - 1 ? "flex" : "none",
   };
 
-  if (!urls || urls.length === 0) {
+  if (!movies || movies.length === 0) {
     return null;
   }
 
@@ -122,12 +139,16 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div style={sliderContentStyle}>
+      <div style={sliderContentStyleWithHeight}>
         <div style={imagesContainerStyle}>
-          {urls.map((url, index) => (
-            <div key={`main-${index}`} style={mainImageStyle}>
+          {movies.map((movie, index) => (
+            <div
+              key={`main-${index}`}
+              style={mainImageStyle}
+              onClick={() => navigate(`/detail-movie/${movie.id}`)}
+            >
               <img
-                src={`${ImagePathForOriginal}${url}`}
+                src={`${ImagePathForOriginal}${movie.poster_path}`}
                 style={imageStyle}
                 alt={`슬라이드 이미지 ${index + 1}`}
               />
@@ -147,7 +168,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
         <button
           style={rightButtonStyle}
           onClick={handleNext}
-          disabled={currentIndex === urls.length - 1}
+          disabled={currentIndex === movies.length - 1}
           aria-label="다음 이미지"
         >
           <IoIosArrowForward size={24} />
