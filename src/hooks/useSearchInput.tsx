@@ -1,11 +1,11 @@
-import { usefetchSearchMovie } from "@Apis/fetchSearchMovie";
+import { useSearchMovieQuery } from "@Apis/fetchSearchMovie";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const useSearchInput = () => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [debouncedValue, setDebouncedValue] = useState<string>("");
-  const { data, isLoading, error } = usefetchSearchMovie(debouncedValue);
+  const { data, isLoading, error } = useSearchMovieQuery(debouncedValue);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const useSearchInput = () => {
   };
 
   const useSearchResults = (query: string) => {
-    const { data, isLoading, error } = usefetchSearchMovie(query);
+    const { data, isLoading, error } = useSearchMovieQuery(query);
 
     return {
       data,

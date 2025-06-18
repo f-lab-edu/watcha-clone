@@ -10,7 +10,7 @@ export type ReviewResponse = {
   total_results: number;
 };
 
-export const usePostReviewQuery = (id: string) => {
+export const usePostReviewMutation = (id: string) => {
   const mutation = useMutation({
     mutationFn: async () => {
       const sessionId = await getSessionId();

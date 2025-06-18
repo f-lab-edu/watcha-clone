@@ -11,16 +11,15 @@ export type MovieResponse = {
 };
 
 const searchMovie = async (title: string) =>
-  (await tmdbRequest({
+  await tmdbRequest({
     method: "GET",
     endpoint: `search/movie`,
     queryParams: {
       language: "ko-KR",
       query: title,
     },
-  })
-    .then((res) => res.data)
-    .then(convertSnakeToCamel)) as MovieResponse;
+    responseInterceptor: (res) => convertSnakeToCamel(res),
+  });
 
 export const useSearchMovieQuery = (title: string) =>
   useSuspenseQuery<MovieResponse>({

@@ -1,4 +1,7 @@
 export const convertSnakeToCamel = (obj: Record<string, any>) => {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
   const result: Record<string, any> = {};
 
   Object.keys(obj).forEach((key) => {
