@@ -1,27 +1,21 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Movie } from "@Types/Movie";
 import { tmdbRequest } from "./tmdbRequest";
+import { convertSnakeToCamel } from "../utils/convertSnakeToCamel";
 
-export const useFetchDetailMovie = (id: string) => {
-  const query = useSuspenseQuery<Movie>({
-    queryKey: ["detailMovie"],
-    queryFn: async () => {
-      const response = await tmdbRequest({
-        method: "GET",
-        endpoint: `movie/${id}`,
-        queryParams: {
-          language: "ko-KR",
-        },
-      });
-      if (!response) {
-        throw new Error("Failed to fetch deatil movie");
-      }
-      return response;
-    },
+const detailMovie = async (id: string) =>
+  (
+    await tmdbRequest({
+      method: "GET",
+      endpoint: `movie/${id}`,
+      queryParams: {
+        language: "ko-KR",
+      },
+    }).then((res) => res.data)
+  ).then(convertSnakeToCamel);
+
+export const useFetchDetailMovie = (id: string) =>
+  useSuspenseQuery<Movie>({
+    queryKey: ["detailMovie", id],
+    queryFn: () => detailMovie(id),
   });
-
-  return {
-    ...query,
-    data: query.data,
-  };
-};
