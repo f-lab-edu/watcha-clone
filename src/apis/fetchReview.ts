@@ -1,33 +1,27 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { tmdbRequest } from "./tmdbRequest";
-import { Review } from "@Types/CommentType";
+import { CommentType } from "@Types/CommentType";
+import { convertSnakeToCamel } from "../utils/convertSnakeToCamel";
 
 export type ReviewResponse = {
   id: number;
   page: number;
-  results: Review[];
-  total_pages: number;
-  total_results: number;
+  results: CommentType[];
+  totalPages: number;
+  totalResults: number;
 };
 
-export const useFetchReviewQuery = (id: string) => {
-  const query = useSuspenseQuery<ReviewResponse>({
-    queryKey: ["fetchReview"],
-    queryFn: async () => {
-      const response = await tmdbRequest({
-        method: "GET",
-        endpoint: `movie/${id}/reviews`,
-        queryParams: {},
-      });
-      if (!response) {
-        throw new Error("Failed to fetch reviews");
-      }
-      return response as ReviewResponse;
-    },
+const fetchReview = async (id: string) =>
+  (await tmdbRequest({
+    method: "GET",
+    endpoint: `movie/${id}/reviews`,
+    queryParams: {},
+  })
+    .then((res) => res.data)
+    .then(convertSnakeToCamel)) as ReviewResponse;
+
+export const useFetchReviewQuery = (id: string) =>
+  useSuspenseQuery<ReviewResponse>({
+    queryKey: ["review", id],
+    queryFn: () => fetchReview(id),
   });
-
-  return {
-    ...query,
-    data: query.data?.results,
-  };
-};
