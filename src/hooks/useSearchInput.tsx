@@ -1,4 +1,4 @@
-import { usefetchSearchMovie } from "@Apis/fetchSearchMovie";
+import { useSearchMovieQuery } from "@Apis/fetchSearchMovie";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDebounceState } from "./useDebounceState";

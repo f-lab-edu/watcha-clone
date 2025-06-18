@@ -25,10 +25,10 @@ const IndividualPurchase = () => {
           onChipClick={setSelectedIndex}
         />
         <div>
-          <ImageSlider movies={movies} />
+          <ImageSlider movies={movies.results} />
         </div>
         <div>
-          <ImageSliderSmall title="Popular Movies" movies={movies} />
+          <ImageSliderSmall title="Popular Movies" movies={movies.results} />
         </div>
       </main>
     </div>

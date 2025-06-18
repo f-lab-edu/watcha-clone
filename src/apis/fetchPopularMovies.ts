@@ -11,13 +11,12 @@ export type MovieResponse = {
 };
 
 const popularMovies = async () =>
-  (
-    await tmdbRequest({
-      method: "GET",
-      endpoint: "movie/popular",
-      queryParams: {},
-    }).then((res) => res.data)
-  ).then(convertSnakeToCamel) as MovieResponse;
+  await tmdbRequest({
+    method: "GET",
+    endpoint: "movie/popular",
+    queryParams: {},
+    responseInterceptor: (res) => convertSnakeToCamel(res),
+  });
 
 export const usePopularMoviesQuery = () =>
   useSuspenseQuery<MovieResponse>({
