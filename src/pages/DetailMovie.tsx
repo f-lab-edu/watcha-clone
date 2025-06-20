@@ -5,6 +5,7 @@ import { getRunningTime } from "@Utils/getRunningTime";
 import { CommentType } from "@Types/CommentType";
 import Comment from "@Components/detail/Comment";
 import { useState } from "react";
+import styled from "styled-components";
 
 const commentMockData: CommentType[] = [
   {
@@ -23,6 +24,171 @@ const commentMockData: CommentType[] = [
     url: "https://example.com/comment/1",
   },
 ];
+
+const Container = styled.div``;
+
+const HeroSection = styled.div`
+  position: relative;
+  height: fit-content;
+  border-bottom: 1px solid #222326;
+`;
+
+const PosterWrapper = styled.div`
+  width: 500px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  aspect-ratio: 16/9;
+`;
+
+const PosterImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+`;
+
+const LeftGradient = styled.div`
+  position: absolute;
+  top: -2%;
+  left: -3%;
+  width: 70%;
+  height: 102%;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    #000 5%,
+    #000000b3 30%,
+    #00000073 50%,
+    #0003 80%,
+    #0000
+  );
+  pointer-events: none;
+`;
+
+const BottomGradient = styled.div`
+  position: absolute;
+  top: 33%;
+  left: 0;
+  width: 100%;
+  height: 68%;
+  content: "";
+  background: linear-gradient(
+    0deg,
+    #000 14%,
+    #000000e6 32%,
+    #000c 45%,
+    #00000073 70%,
+    #0000
+  );
+  pointer-events: none;
+`;
+
+const MovieInfoWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  position: relative;
+  z-index: 999;
+  width: 100%;
+`;
+
+const MovieTitle = styled.h1`
+  font-size: 40px;
+  font-weight: bold;
+  margin: 16px 0px;
+`;
+
+const MovieMeta = styled.div`
+  margin-bottom: 16px;
+`;
+
+const MovieOverview = styled.p`
+  max-width: 440px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  margin-bottom: 16px;
+`;
+
+const PreviewText = styled.p`
+  margin-bottom: 24px;
+`;
+
+const ActionContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+`;
+
+const ActionButton = styled.button`
+  height: 40px;
+  padding: 0px 16px;
+  background: #f82f62;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+`;
+
+const ActionLinks = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const ActionLink = styled.span`
+  cursor: pointer;
+`;
+
+const CommentsSection = styled.div`
+  padding: 0 40px;
+`;
+
+const CommentsTitle = styled.p`
+  font-size: 24px;
+  font-weight: bold;
+  margin: 16px 0;
+  color: #ffffff;
+`;
+
+const CommentsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const CommentForm = styled.div`
+  margin-top: 20px;
+  display: flex;
+  gap: 8px;
+`;
+
+const CommentInput = styled.input`
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: #222;
+  color: #fff;
+`;
+
+const CommentSubmitButton = styled.button`
+  padding: 8px 16px;
+  background: #f82f62;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+`;
 
 const DetailMovie = () => {
   const { id } = useParams();
@@ -52,183 +218,49 @@ const DetailMovie = () => {
   };
 
   return (
-    <div>
+    <Container>
       <TopHeader />
-      <div
-        style={{
-          position: "relative",
-          height: "fit-content",
-          borderBottom: "1px solid #222326",
-        }}
-      >
-        <div
-          style={{
-            width: "500px",
-            position: "absolute",
-            top: 0,
-            right: 0,
-            aspectRatio: "16/9",
-          }}
-        >
-          <img
+      <HeroSection>
+        <PosterWrapper>
+          <PosterImage
             src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              position: "relative",
-            }}
             alt={data.title}
           />
-          <div
-            style={{
-              position: "absolute",
-              top: "-2%",
-              left: "-3%",
-              width: "70%",
-              height: "102%",
-              content: '""',
-              background:
-                "linear-gradient(90deg, #000 5%, #000000b3 30%, #00000073 50%, #0003 80%, #0000)",
-              pointerEvents: "none",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              top: "33%",
-              left: "0",
-              width: "100%",
-              height: "68%",
-              content: '""',
-              background:
-                "linear-gradient(0deg, #000 14%, #000000e6 32%, #000c 45%, #00000073 70%, #0000)",
-              pointerEvents: "none",
-            }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            padding: "16px",
-            position: "relative",
-            zIndex: 999,
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-            }}
-          >
-            <h1
-              style={{
-                fontSize: "40px",
-                fontWeight: "bold",
-                margin: "16px 0px",
-              }}
-            >
-              {data.title}
-            </h1>
-            <div style={{ marginBottom: "16px" }}>
-              <span>12세</span>·<span>평균 {data.vote_average}</span>·
-              <span>{data.release_date.slice(0, 4)}</span>·
-              <span>{getRunningTime(data.runtime)}</span>·
-              {data.genres.map((genre, index, array) => (
-                <span key={genre.id} style={{ marginRight: "8px" }}>
-                  {genre.name}
-                  {index < array.length - 1 ? " · " : ""}
-                </span>
-              ))}
-            </div>
-            <p
-              style={{
-                maxWidth: "440px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-                marginBottom: "16px",
-              }}
-            >
-              {data.overview}
-            </p>
-            <p
-              style={{
-                marginBottom: "24px",
-              }}
-            >
-              미리보기
-            </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  marginBottom: "16px",
-                }}
-              >
-                <button
-                  style={{
-                    height: "40px",
-                    padding: "0px 16px",
-                    background: "#f82f62",
-                    border: "none",
-                    borderRadius: "4px",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  구매하기
-                </button>
-                <button
-                  style={{
-                    height: "40px",
-                    padding: "0px 16px",
-                    background: "#f82f62",
-                    border: "none",
-                    borderRadius: "4px",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  선물하기
-                </button>
-              </div>
-              <div
-                style={{ display: "flex", gap: "8px", alignItems: "center" }}
-              >
-                <span>보고싶어요</span>
-                <span>평가하기</span>
-                <span>왓챠피티</span>
-                <span>더보기</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        style={{
-          padding: "0 40px",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "24px",
-            fontWeight: "bold",
-            margin: "16px 0",
-            color: "#FFFFFF",
-          }}
-        >
-          왓챠파디아 사용자 평
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <LeftGradient />
+          <BottomGradient />
+        </PosterWrapper>
+        <MovieInfoWrapper>
+          <MovieTitle>{data.title}</MovieTitle>
+          <MovieMeta>
+            <span>12세</span>·<span>평균 {data.vote_average}</span>·
+            <span>{data.release_date.slice(0, 4)}</span>·
+            <span>{getRunningTime(data.runtime)}</span>·
+            {data.genres.map((genre, index, array) => (
+              <span key={genre.id} style={{ marginRight: "8px" }}>
+                {genre.name}
+                {index < array.length - 1 ? " · " : ""}
+              </span>
+            ))}
+          </MovieMeta>
+          <MovieOverview>{data.overview}</MovieOverview>
+          <PreviewText>미리보기</PreviewText>
+          <ActionContainer>
+            <ButtonGroup>
+              <ActionButton>구매하기</ActionButton>
+              <ActionButton>선물하기</ActionButton>
+            </ButtonGroup>
+            <ActionLinks>
+              <ActionLink>보고싶어요</ActionLink>
+              <ActionLink>평가하기</ActionLink>
+              <ActionLink>왓챠피티</ActionLink>
+              <ActionLink>더보기</ActionLink>
+            </ActionLinks>
+          </ActionContainer>
+        </MovieInfoWrapper>
+      </HeroSection>
+      <CommentsSection>
+        <CommentsTitle>왓챠파디아 사용자 평</CommentsTitle>
+        <CommentsList>
           {commentData.map((comment) => (
             <Comment
               key={comment.id}
@@ -239,18 +271,21 @@ const DetailMovie = () => {
               content={comment.content}
             />
           ))}
-        </div>
-        <div>
-          <input
+        </CommentsList>
+        <CommentForm>
+          <CommentInput
             value={commentText}
             onChange={(e) => {
               setCommentText(e.target.value);
             }}
+            placeholder="댓글을 입력하세요..."
           />
-          <button onClick={handleCommentSubmit}>댓글 작성</button>
-        </div>
-      </div>
-    </div>
+          <CommentSubmitButton onClick={handleCommentSubmit}>
+            댓글 작성
+          </CommentSubmitButton>
+        </CommentForm>
+      </CommentsSection>
+    </Container>
   );
 };
 
