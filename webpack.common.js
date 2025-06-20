@@ -30,6 +30,8 @@ module.exports = {
       "@Components": path.resolve(__dirname, 'src/components/'),
       "@Apis": path.resolve(__dirname, 'src/apis/'),
       "@Assets": path.resolve(__dirname, 'src/assets/'),
+      "@Hooks": path.resolve(__dirname, 'src/hooks/'),
+      "@Utils": path.resolve(__dirname, 'src/utils/'),
     },
   },
   plugins: [
