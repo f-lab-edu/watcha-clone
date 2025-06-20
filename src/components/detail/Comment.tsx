@@ -1,16 +1,21 @@
+import { CommentType } from "@Types/CommentType";
+import { ImagePathForOriginal } from "@Constants/ImagePath";
+
 type CommentProps = {
-  profileImage?: string;
-  username: string;
-  rating: number;
-  content: string;
+  comment: CommentType;
 };
 
-const Comment = ({ profileImage, username, rating, content }: CommentProps) => {
+const Comment = ({ comment }: CommentProps) => {
+  const { author_details, content } = comment;
+  const { username, rating, avatar_path } = author_details;
+
   const getRatingStars = (rating: number) => {
     const stars = [];
-    for (let i = 0; i < rating; i++) {
+    const roundedRating = Math.round(rating / 2); // 10점 만점을 5점 만점으로 변환
+
+    for (let i = 0; i < 5; i++) {
       stars.push(
-        <span key={i} style={{ color: i < rating ? "#FFD700" : "#ccc" }}>
+        <span key={i} style={{ color: i < roundedRating ? "#FFD700" : "#ccc" }}>
           ⭐
         </span>
       );
@@ -18,8 +23,20 @@ const Comment = ({ profileImage, username, rating, content }: CommentProps) => {
     return stars;
   };
 
+  // 프로필 이미지 경로 처리
+  const getProfileImage = () => {
+    if (!avatar_path) return "/avatar.png";
+
+    // TMDB API에서 가져온 이미지인 경우
+    if (avatar_path.startsWith("/")) {
+      return `${ImagePathForOriginal}${avatar_path}`;
+    }
+
+    return avatar_path;
+  };
+
   return (
-    <div style={{ display: "flex", gap: "8px" }}>
+    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
       <div
         style={{
           width: "48px",
@@ -33,7 +50,7 @@ const Comment = ({ profileImage, username, rating, content }: CommentProps) => {
         }}
       >
         <img
-          src={profileImage ?? "/avatar.png"}
+          src={getProfileImage()}
           alt="프로필 이미지"
           style={{
             width: "100%",
@@ -58,6 +75,9 @@ const Comment = ({ profileImage, username, rating, content }: CommentProps) => {
           <span>{getRatingStars(rating)}</span>
         </div>
         <div>{content}</div>
+        <div style={{ fontSize: "12px", color: "#666" }}>
+          {new Date(comment.created_at).toLocaleDateString()}
+        </div>
       </div>
     </div>
   );
