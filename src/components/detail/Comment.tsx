@@ -5,19 +5,19 @@ type CommentProps = {
   content: string;
 };
 
-const Comment = ({ profileImage, username, rating, content }: CommentProps) => {
-  const getRatingStars = (rating: number) => {
-    const stars = [];
-    for (let i = 0; i < rating; i++) {
-      stars.push(
-        <span key={i} style={{ color: i < rating ? "#FFD700" : "#ccc" }}>
-          ⭐
-        </span>
-      );
-    }
-    return stars;
-  };
+const getRatingStars = (rating: number) => {
+  const stars = [];
+  for (let i = 0; i < rating; i++) {
+    stars.push(
+      <span key={i} style={{ color: i < rating ? "#FFD700" : "#ccc" }}>
+        ⭐
+      </span>
+    );
+  }
+  return stars;
+};
 
+const Comment = ({ profileImage, username, rating, content }: CommentProps) => {
   return (
     <div style={{ display: "flex", gap: "8px" }}>
       <div
