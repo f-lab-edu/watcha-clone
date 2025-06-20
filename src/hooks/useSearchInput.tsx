@@ -18,8 +18,8 @@ const useSearchInput = () => {
     }
   }, [debouncedValue, navigate]);
 
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+  const handleSearchInputChange: React.ChangeEventHandler<HTMLInputElement> = (
+    event
   ) => {
     setSearchInput(event.target.value);
   };
@@ -30,7 +30,9 @@ const useSearchInput = () => {
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress: React.KeyboardEventHandler<HTMLInputElement> = (
+    event
+  ) => {
     if (event.key === "Enter") {
       handleSearch();
     }
