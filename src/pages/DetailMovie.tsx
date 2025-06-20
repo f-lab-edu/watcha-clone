@@ -6,6 +6,7 @@ import { CommentType } from "@Types/CommentType";
 import Comment from "@Components/detail/Comment";
 import { useState } from "react";
 import styled from "styled-components";
+import { CommentModel } from "../model/CommentModel";
 
 const commentMockData: CommentType[] = [
   {
@@ -194,12 +195,13 @@ const DetailMovie = () => {
   const { id } = useParams();
   const { data } = useFetchDetailMovie(id || "");
   const [commentText, setCommentText] = useState("");
-  const [commentData, setCommentData] =
-    useState<CommentType[]>(commentMockData);
+  const [commentData, setCommentData] = useState<CommentModel[]>(
+    commentMockData.map((comment) => new CommentModel(comment))
+  );
 
   const handleCommentSubmit = () => {
     if (commentText.trim() === "") return;
-    const newComment: CommentType = {
+    const newComment = new CommentModel({
       id: String(commentData.length + 1),
       author: "Current User",
       author_details: {
@@ -210,9 +212,8 @@ const DetailMovie = () => {
       },
       content: commentText,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
       url: `https://example.com/comment/${commentData.length + 1}`,
-    };
+    });
     setCommentData([...commentData, newComment]);
     setCommentText("");
   };
@@ -264,11 +265,9 @@ const DetailMovie = () => {
           {commentData.map((comment) => (
             <Comment
               key={comment.id}
-              username={
-                comment.author_details.name || comment.author_details.username
-              }
-              rating={comment.author_details.rating || 0}
-              content={comment.content}
+              username={comment.username}
+              rating={comment.rating}
+              content={comment.reviewContent}
             />
           ))}
         </CommentsList>

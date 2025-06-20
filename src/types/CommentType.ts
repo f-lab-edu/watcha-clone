@@ -9,6 +9,6 @@ export type CommentType = {
   content: string;
   created_at: string;
   id: string;
-  updated_at: string;
+  updated_at?: string;
   url: string;
 };
