@@ -2,6 +2,7 @@ import { TopHeader } from "@Components/commons/TopHeader";
 import { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { usefetchSearchMovie } from "@Apis/fetchSearchMovie";
+import { ErrorBoundary } from "react-error-boundary";
 
 const SearchResultContent = () => {
   const [searchParams] = useSearchParams();
@@ -49,9 +50,13 @@ const SearchList = () => {
     <div>
       <TopHeader />
       <div style={{ padding: "16px" }}>
-        <Suspense fallback={<div>검색 결과를 불러오는 중...</div>}>
-          <SearchResultContent />
-        </Suspense>
+        <ErrorBoundary
+          fallback={<div>검색 결과를 불러오는 중에 오류가 발생했습니다.</div>}
+        >
+          <Suspense fallback={<div>검색 결과를 불러오는 중...</div>}>
+            <SearchResultContent />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   );

@@ -38,15 +38,7 @@ const useSearchInput = () => {
     }
   };
 
-  const useSearchResults = (query: string) => {
-    const { data, isLoading, error } = usefetchSearchMovie(query);
-
-    return {
-      data,
-      isLoading,
-      error,
-    };
-  };
+  const useSearchResults = (query: string) => usefetchSearchMovie(query);
 
   return {
     searchInput,
