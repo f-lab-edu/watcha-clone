@@ -1,22 +1,16 @@
 import { usefetchSearchMovie } from "@Apis/fetchSearchMovie";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDebounceState } from "./useDebounceState";
 
 const useSearchInput = () => {
   const [searchInput, setSearchInput] = useState<string>("");
-  const [debouncedValue, setDebouncedValue] = useState<string>("");
-  const { data, isLoading, error } = usefetchSearchMovie(debouncedValue);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedValue(searchInput);
-    }, 1000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [searchInput]);
+  const debouncedValue = useDebounceState({
+    value: searchInput,
+    ms: 3000,
+  });
+  const { data, isLoading, error } = usefetchSearchMovie(debouncedValue);
 
   useEffect(() => {
     if (debouncedValue.trim()) {
