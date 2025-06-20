@@ -1,10 +1,7 @@
 import styled from "styled-components";
 
 type CommentProps = {
-  profileImage?: string;
-  username: string;
-  rating: number;
-  content: string;
+  comment: CommentType;
 };
 
 const CommentContainer = styled.div`

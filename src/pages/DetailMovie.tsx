@@ -192,8 +192,12 @@ const CommentSubmitButton = styled.button`
 `;
 
 const DetailMovie = () => {
-  const { id } = useParams();
-  const { data } = useFetchDetailMovie(id || "");
+  const { id = "" } = useParams();
+  const { data: movieData } = useFetchDetailMovie(id);
+  const { data: comments = [], isLoading: isLoadingComments } =
+    getCommentsQuery(id);
+  const postComment = createCommentMutation(id);
+
   const [commentText, setCommentText] = useState("");
   const [commentData, setCommentData] = useState<CommentModel[]>(
     commentMockData.map((comment) => new CommentModel(comment))
@@ -207,8 +211,8 @@ const DetailMovie = () => {
       author_details: {
         name: "Current User",
         username: "currentuser",
-        avatar_path: "/path/to/currentuser/avatar.jpg",
-        rating: 3,
+        avatar_path: "/avatar.png",
+        rating: rating * 2,
       },
       content: commentText,
       created_at: new Date().toISOString(),
