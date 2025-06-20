@@ -1,7 +1,7 @@
 import { useFetchDetailMovie } from "@Apis/fetchDetailMovie";
 import { TopHeader } from "@Components/commons/TopHeader";
 import { useParams } from "react-router-dom";
-import { getRunningTime } from "../utils/getRunningTime";
+import { getRunningTime } from "@Utils/getRunningTime";
 import { CommentType } from "@Types/CommentType";
 import Comment from "@Components/detail/Comment";
 import { useState } from "react";
