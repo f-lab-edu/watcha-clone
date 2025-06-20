@@ -11,4 +11,5 @@ export type CommentType = {
   id: string;
   updated_at: string;
   url: string;
+  movieId: string;
 };

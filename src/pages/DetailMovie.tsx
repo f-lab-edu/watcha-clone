@@ -5,50 +5,42 @@ import { getRunningTime } from "../utils/getRunningTime";
 import { CommentType } from "@Types/CommentType";
 import Comment from "@Components/detail/Comment";
 import { useState } from "react";
-
-const commentMockData: CommentType[] = [
-  {
-    author: "John Doe",
-    author_details: {
-      name: "John Doe",
-      username: "johndoe",
-      avatar_path: "/path/to/avatar.jpg",
-      rating: 4,
-    },
-    content:
-      "인간이 사라진 숲에 남은 것은 불가항력의 힘에 맞서려 하지 않는 자연의 연대 <인사이드 아웃 2>를 제치고 아카데미 장편애니메이션상을 수상한 <플로우>는 블렌더 사용, 무언극 등 다양한 요소로 화제가 되었다. 무료 프로그램인 블렌더만으로도 웬만한 3D 애니메이션에 맞먹는 완성도를 이룬 것이 우선 인상적이다. 무언극으로서 동물의 행동만으로 2시간을 가득 채우는데, 전반적인 구성이나 때깔이 마치 게임 아트를 보는 듯하다.",
-    created_at: "2023-10-01T12:00:00Z",
-    id: "1",
-    updated_at: "2023-10-01T12:00:00Z",
-    url: "https://example.com/comment/1",
-  },
-];
+import { createCommentMutation, getCommentsQuery } from "../hooks/useComments";
 
 const DetailMovie = () => {
-  const { id } = useParams();
-  const { data } = useFetchDetailMovie(id || "");
+  const { id = "" } = useParams();
+  const { data: movieData } = useFetchDetailMovie(id);
+  const { data: comments = [], isLoading: isLoadingComments } =
+    getCommentsQuery(id);
+  const postComment = createCommentMutation(id);
+
   const [commentText, setCommentText] = useState("");
-  const [commentData, setCommentData] =
-    useState<CommentType[]>(commentMockData);
+  const [rating, setRating] = useState(5);
 
   const handleCommentSubmit = () => {
     if (commentText.trim() === "") return;
-    const newComment: CommentType = {
-      id: String(commentData.length + 1),
+
+    const newComment: Omit<
+      CommentType,
+      "id" | "url" | "created_at" | "updated_at"
+    > = {
       author: "Current User",
       author_details: {
         name: "Current User",
         username: "currentuser",
-        avatar_path: "/path/to/currentuser/avatar.jpg",
-        rating: 3,
+        avatar_path: "/avatar.png",
+        rating: rating * 2,
       },
       content: commentText,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      url: `https://example.com/comment/${commentData.length + 1}`,
+      movieId: "111",
     };
-    setCommentData([...commentData, newComment]);
-    setCommentText("");
+
+    postComment.mutate(newComment, {
+      onSuccess: () => {
+        setCommentText("");
+        setRating(5);
+      },
+    });
   };
 
   return (
@@ -70,16 +62,18 @@ const DetailMovie = () => {
             aspectRatio: "16/9",
           }}
         >
-          <img
-            src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              position: "relative",
-            }}
-            alt={data.title}
-          />
+          {movieData?.poster_path && (
+            <img
+              src={`https://image.tmdb.org/t/p/w500${movieData.poster_path}`}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                position: "relative",
+              }}
+              alt={movieData.title}
+            />
+          )}
           <div
             style={{
               position: "absolute",
@@ -128,13 +122,16 @@ const DetailMovie = () => {
                 margin: "16px 0px",
               }}
             >
-              {data.title}
+              {movieData?.title}
             </h1>
             <div style={{ marginBottom: "16px" }}>
-              <span>12세</span>·<span>평균 {data.vote_average}</span>·
-              <span>{data.release_date.slice(0, 4)}</span>·
-              <span>{getRunningTime(data.runtime)}</span>·
-              {data.genres.map((genre, index, array) => (
+              <span>12세</span>·<span>평균 {movieData?.vote_average}</span>·
+              <span>{movieData?.release_date?.slice(0, 4)}</span>·
+              <span>
+                {movieData?.runtime ? getRunningTime(movieData.runtime) : ""}
+              </span>
+              ·
+              {movieData?.genres?.map((genre, index, array) => (
                 <span key={genre.id} style={{ marginRight: "8px" }}>
                   {genre.name}
                   {index < array.length - 1 ? " · " : ""}
@@ -152,7 +149,7 @@ const DetailMovie = () => {
                 marginBottom: "16px",
               }}
             >
-              {data.overview}
+              {movieData?.overview}
             </p>
             <p
               style={{
@@ -228,26 +225,84 @@ const DetailMovie = () => {
         >
           왓챠파디아 사용자 평
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {commentData.map((comment) => (
-            <Comment
-              key={comment.id}
-              username={
-                comment.author_details.name || comment.author_details.username
-              }
-              rating={comment.author_details.rating || 0}
-              content={comment.content}
+
+        <div
+          style={{
+            marginBottom: "24px",
+            padding: "16px",
+            backgroundColor: "#222326",
+            borderRadius: "8px",
+          }}
+        >
+          <div style={{ marginBottom: "16px" }}>
+            <label style={{ display: "block", marginBottom: "8px" }}>
+              평점
+            </label>
+            <div>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRating(star)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    fontSize: "24px",
+                    cursor: "pointer",
+                    color: star <= rating ? "#FFD700" : "#ccc",
+                  }}
+                >
+                  ⭐
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ marginBottom: "16px" }}>
+            <label style={{ display: "block", marginBottom: "8px" }}>
+              댓글
+            </label>
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              style={{
+                width: "100%",
+                minHeight: "100px",
+                padding: "8px",
+                backgroundColor: "#333",
+                color: "#fff",
+                border: "1px solid #444",
+                borderRadius: "4px",
+              }}
+              placeholder="영화에 대한 감상을 남겨주세요"
             />
-          ))}
-        </div>
-        <div>
-          <input
-            value={commentText}
-            onChange={(e) => {
-              setCommentText(e.target.value);
+          </div>
+          <button
+            onClick={handleCommentSubmit}
+            disabled={postComment.isPending}
+            style={{
+              height: "40px",
+              padding: "0px 16px",
+              background: "#f82f62",
+              border: "none",
+              borderRadius: "4px",
+              color: "#FFFFFF",
+              cursor: postComment.isPending ? "not-allowed" : "pointer",
+              opacity: postComment.isPending ? 0.7 : 1,
             }}
-          />
-          <button onClick={handleCommentSubmit}>댓글 작성</button>
+          >
+            {postComment.isPending ? "작성 중..." : "댓글 작성"}
+          </button>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {isLoadingComments ? (
+            <div>댓글을 불러오는 중...</div>
+          ) : comments.length === 0 ? (
+            <div>아직 댓글이 없습니다. 첫 댓글을 작성해보세요!</div>
+          ) : (
+            comments.map((comment: CommentType) => (
+              <Comment key={comment.id} comment={comment} />
+            ))
+          )}
         </div>
       </div>
     </div>
