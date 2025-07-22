@@ -10,7 +10,7 @@ const useSearchInput = () => {
     value: searchInput,
     ms: 3000,
   });
-  const { data, isLoading, error } = usefetchSearchMovie(debouncedValue);
+  const { data, isLoading, error } = useSearchMovieQuery(debouncedValue);
 
   useEffect(() => {
     if (debouncedValue.trim()) {
@@ -38,7 +38,7 @@ const useSearchInput = () => {
     }
   };
 
-  const useSearchResults = (query: string) => usefetchSearchMovie(query);
+  const useSearchResults = (query: string) => useSearchMovieQuery(query);
 
   return {
     searchInput,

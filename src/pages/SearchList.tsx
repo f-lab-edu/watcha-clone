@@ -2,7 +2,6 @@ import { useSearchMovieQuery } from "@Apis/fetchSearchMovie";
 import { TopHeader } from "@Components/commons/TopHeader";
 import { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
-import { usefetchSearchMovie } from "@Apis/fetchSearchMovie";
 import { ErrorBoundary } from "react-error-boundary";
 import styled from "styled-components";
 
