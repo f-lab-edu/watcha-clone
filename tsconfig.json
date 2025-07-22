@@ -7,6 +7,8 @@
       "@Components/*": ["./src/components/*"],
       "@Constants/*": ["./src/constants/*"],
       "@Types/*": ["./src/types/*"],
+      "@Utils/*": ["./src/utils/*"],
+      "@Hooks/*": ["./src/hooks/*"],
     },
     "lib": [
       "dom",
