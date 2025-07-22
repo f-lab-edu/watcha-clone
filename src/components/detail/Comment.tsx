@@ -1,84 +1,85 @@
-import styled from "styled-components";
+import { CommentType } from "@Types/CommentType";
+import { ImagePathForOriginal } from "@Constants/ImagePath";
 
 type CommentProps = {
   comment: CommentType;
 };
 
-const CommentContainer = styled.div`
-  display: flex;
-  gap: 8px;
-`;
+const Comment = ({ comment }: CommentProps) => {
+  const { author_details, content } = comment;
+  const { username, rating, avatar_path } = author_details;
 
-const ProfileImageContainer = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+  const getRatingStars = (rating: number) => {
+    const stars = [];
+    const roundedRating = Math.round(rating / 2); // 10점 만점을 5점 만점으로 변환
 
-const ProfileImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  aspect-ratio: 1/1;
-`;
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        <span key={i} style={{ color: i < roundedRating ? "#FFD700" : "#ccc" }}>
+          ⭐
+        </span>
+      );
+    }
+    return stars;
+  };
 
-const CommentContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-`;
+  // 프로필 이미지 경로 처리
+  const getProfileImage = () => {
+    if (!avatar_path) return "/avatar.png";
 
-const UserInfoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
+    // TMDB API에서 가져온 이미지인 경우
+    if (avatar_path.startsWith("/")) {
+      return `${ImagePathForOriginal}${avatar_path}`;
+    }
 
-const Username = styled.span`
-  font-weight: bold;
-  font-size: 16px;
-`;
+    return avatar_path;
+  };
 
-const RatingContainer = styled.span``;
-
-const Star = styled.span<{ active: boolean }>`
-  color: ${(props) => (props.active ? "#FFD700" : "#ccc")};
-`;
-
-const CommentText = styled.div``;
-
-const getRatingStars = (rating: number) => {
-  const stars = [];
-  for (let i = 0; i < rating; i++) {
-    stars.push(
-      <Star key={i} active={i < rating}>
-        ⭐
-      </Star>
-    );
-  }
-  return stars;
-};
-
-const Comment = ({ profileImage, username, rating, content }: CommentProps) => {
   return (
-    <CommentContainer>
-      <ProfileImageContainer>
-        <ProfileImage src={profileImage ?? "/avatar.png"} alt="프로필 이미지" />
-      </ProfileImageContainer>
-      <CommentContent>
-        <UserInfoContainer>
-          <Username>{username}</Username>
-          <RatingContainer>{getRatingStars(rating)}</RatingContainer>
-        </UserInfoContainer>
-        <CommentText>{content}</CommentText>
-      </CommentContent>
-    </CommentContainer>
+    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+      <div
+        style={{
+          width: "48px",
+          height: "48px",
+          borderRadius: "50%",
+          overflow: "hidden",
+          backgroundColor: "#f0f0f0",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={getProfileImage()}
+          alt="프로필 이미지"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            aspectRatio: "1/1",
+          }}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+          flex: 1,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span style={{ fontWeight: "bold", fontSize: "16px" }}>
+            {username}
+          </span>
+          <span>{getRatingStars(rating)}</span>
+        </div>
+        <div>{content}</div>
+        <div style={{ fontSize: "12px", color: "#666" }}>
+          {new Date(comment.created_at).toLocaleDateString()}
+        </div>
+      </div>
+    </div>
   );
 };
 
