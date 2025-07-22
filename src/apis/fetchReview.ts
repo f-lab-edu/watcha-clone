@@ -11,14 +11,12 @@ export type ReviewResponse = {
   totalResults: number;
 };
 
-const fetchReview = async (id: string) =>
-  (await tmdbRequest({
+const fetchReview = (id: string) =>
+  tmdbRequest({
     method: "GET",
     endpoint: `movie/${id}/reviews`,
     queryParams: {},
-  })
-    .then((res) => res.data)
-    .then(convertSnakeToCamel)) as ReviewResponse;
+  }).then((res) => convertSnakeToCamel(res.data) as ReviewResponse);
 
 export const useFetchReviewQuery = (id: string) =>
   useSuspenseQuery<ReviewResponse>({

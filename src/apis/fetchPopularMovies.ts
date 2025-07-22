@@ -10,8 +10,8 @@ export type MovieResponse = {
   totalResults: number;
 };
 
-const popularMovies = async () =>
-  await tmdbRequest({
+const popularMovies = () =>
+  tmdbRequest({
     method: "GET",
     endpoint: "movie/popular",
     queryParams: {},

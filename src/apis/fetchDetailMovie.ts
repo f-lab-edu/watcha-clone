@@ -3,8 +3,8 @@ import { Movie } from "@Types/Movie";
 import { tmdbRequest } from "./tmdbRequest";
 import { convertSnakeToCamel } from "../utils/convertSnakeToCamel";
 
-const detailMovie = async (id: string) =>
-  await tmdbRequest({
+const detailMovie = (id: string) =>
+  tmdbRequest({
     method: "GET",
     endpoint: `movie/${id}`,
     queryParams: {

@@ -10,8 +10,8 @@ export type MovieResponse = {
   totalResults: number;
 };
 
-const searchMovie = async (title: string) =>
-  await tmdbRequest({
+const searchMovie = (title: string) =>
+  tmdbRequest({
     method: "GET",
     endpoint: `search/movie`,
     queryParams: {

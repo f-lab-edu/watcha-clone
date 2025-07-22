@@ -67,7 +67,7 @@ export const tmdbRequest = async ({
       }),
       new Promise((_, reject) => {
         setTimeout(() => {
-          if (controller) controller.abort();
+          controller?.abort();
           reject(new Error(`요청 시간 초과: ${timeout}ms`));
         }, config.timeout);
       }),
