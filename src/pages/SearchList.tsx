@@ -1,7 +1,7 @@
+import { useSearchMovieQuery } from "@Apis/fetchSearchMovie";
 import { TopHeader } from "@Components/commons/TopHeader";
 import { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
-import { usefetchSearchMovie } from "@Apis/fetchSearchMovie";
 import { ErrorBoundary } from "react-error-boundary";
 import styled from "styled-components";
 
@@ -50,7 +50,7 @@ const LoadingMessage = styled.div``;
 const SearchResultContent = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query") || "";
-  const { data } = usefetchSearchMovie(query);
+  const { data } = useSearchMovieQuery(query);
 
   if (!data?.results?.length)
     return <NoResults>검색 결과가 없습니다.</NoResults>;
