@@ -3,7 +3,8 @@ import ChipList from "@Components/commons/ChipList";
 import ImageSlider from "@Components/commons/ImageSlider";
 import ImageSliderSmall from "@Components/commons/ImageSliderSmall";
 import { TopHeader } from "@Components/commons/TopHeader";
-import { useState } from "react";
+import CommonLoading from "@Components/loading/CommonLoading";
+import { Suspense, useState } from "react";
 
 const IndividualPurchase = () => {
   const { data: movies } = usePopularMoviesQuery();
@@ -24,12 +25,13 @@ const IndividualPurchase = () => {
           selectedIndex={selectedIndex}
           onChipClick={setSelectedIndex}
         />
-        <div>
+        <Suspense fallback={<CommonLoading />}>
           <ImageSlider movies={movies.results} />
-        </div>
-        <div>
+        </Suspense>
+
+        <Suspense fallback={<CommonLoading />}>
           <ImageSliderSmall title="Popular Movies" movies={movies.results} />
-        </div>
+        </Suspense>
       </main>
     </div>
   );

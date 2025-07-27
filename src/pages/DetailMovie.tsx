@@ -3,9 +3,11 @@ import { TopHeader } from "@Components/commons/TopHeader";
 import { useParams } from "react-router-dom";
 import { getRunningTime } from "../utils/getRunningTime";
 import { CommentType } from "@Types/CommentType";
-import Comment from "@Components/detail/Comment";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { createCommentMutation, getCommentsQuery } from "../hooks/useComments";
+import CommonLoading from "@Components/loading/CommonLoading";
+
+const Comment = lazy(() => import("@Components/detail/Comment"));
 
 const DetailMovie = () => {
   const { id = "" } = useParams();
@@ -45,7 +47,9 @@ const DetailMovie = () => {
 
   return (
     <div>
-      <TopHeader />
+      <Suspense fallback={<CommonLoading />}>
+        <TopHeader />
+      </Suspense>
       <div
         style={{
           position: "relative",
@@ -300,7 +304,9 @@ const DetailMovie = () => {
             <div>아직 댓글이 없습니다. 첫 댓글을 작성해보세요!</div>
           ) : (
             comments.map((comment: CommentType) => (
-              <Comment key={comment.id} comment={comment} />
+              <Suspense fallback={<div>댓글을 불러오는 중...</div>}>
+                <Comment key={comment.id} comment={comment} />
+              </Suspense>
             ))
           )}
         </div>
