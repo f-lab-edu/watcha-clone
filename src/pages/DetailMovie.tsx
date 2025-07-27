@@ -6,6 +6,7 @@ import { CommentType } from "@Types/CommentType";
 import { lazy, Suspense, useState } from "react";
 import { createCommentMutation, getCommentsQuery } from "../hooks/useComments";
 import CommonLoading from "@Components/loading/CommonLoading";
+import CommentSection from "@Components/detail/CommentSection";
 
 const Comment = lazy(() => import("@Components/detail/Comment"));
 
@@ -298,17 +299,9 @@ const DetailMovie = () => {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {isLoadingComments ? (
-            <div>댓글을 불러오는 중...</div>
-          ) : comments.length === 0 ? (
-            <div>아직 댓글이 없습니다. 첫 댓글을 작성해보세요!</div>
-          ) : (
-            comments.map((comment: CommentType) => (
-              <Suspense fallback={<div>댓글을 불러오는 중...</div>}>
-                <Comment key={comment.id} comment={comment} />
-              </Suspense>
-            ))
-          )}
+          <Suspense fallback={<div>댓글을 불러오는 중...</div>}>
+            <CommentSection comments={comments} />
+          </Suspense>
         </div>
       </div>
     </div>
