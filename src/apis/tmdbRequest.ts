@@ -101,9 +101,11 @@ export const tmdbRequest = async ({
         throw error;
       }
 
+      const backoffDelay = retryDelay * Math.pow(2, retryCount);
+
       retryCount++;
 
-      await wait(retryDelay);
+      await wait(backoffDelay);
 
       continue;
     }
