@@ -7,6 +7,9 @@ interface RequestOptions {
   requestBody?: Record<string, unknown> | string;
   timeout?: number;
   signal?: AbortSignal;
+  maxRetries?: number;
+  retryDelay?: number;
+  keepalive?: boolean;
 }
 
 type RequestInterceptor = (config: RequestOptions) => RequestOptions;
@@ -21,6 +24,8 @@ type RequestConfig = RequestOptions & {
   timeout: number;
 };
 
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const tmdbRequest = async ({
   method = "GET",
   endpoint,
@@ -30,6 +35,9 @@ export const tmdbRequest = async ({
   signal,
   requestInterceptor,
   responseInterceptor,
+  maxRetries = 3,
+  retryDelay = 1000,
+  keepalive = false,
 }: tmdbRequestType) => {
   let config: RequestConfig = {
     method,
@@ -54,37 +62,51 @@ export const tmdbRequest = async ({
   const url = queryString
     ? `${TMDB_BASE_URL}${config.endpoint}?${queryString}`
     : `${TMDB_BASE_URL}${config.endpoint}`;
+  let retryCount = 0;
 
-  try {
-    const response = (await Promise.race([
-      fetch(url, {
-        method: config.method,
-        headers: API_OPTIONS.headers,
-        body: config.requestBody
-          ? JSON.stringify(config.requestBody)
-          : undefined,
-        signal: abortSignal,
-      }),
-      new Promise((_, reject) => {
-        setTimeout(() => {
-          controller?.abort();
-          reject(new Error(`요청 시간 초과: ${timeout}ms`));
-        }, config.timeout);
-      }),
-    ])) as Response;
+  while (true) {
+    try {
+      const response = (await Promise.race([
+        fetch(url, {
+          method: config.method,
+          headers: API_OPTIONS.headers,
+          body: config.requestBody
+            ? JSON.stringify(config.requestBody)
+            : undefined,
+          signal: abortSignal,
+          keepalive,
+        }),
+        new Promise((_, reject) => {
+          setTimeout(() => {
+            controller?.abort();
+            reject(new Error(`요청 시간 초과: ${timeout}ms`));
+          }, config.timeout);
+        }),
+      ])) as Response;
 
-    if (!response.ok) {
-      throw new Error(`API 요청 실패: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`API 요청 실패: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      return responseInterceptor ? responseInterceptor(data) : data;
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error("요청이 취소되었습니다.");
+      }
+
+      if (retryCount >= maxRetries) {
+        console.error(`${maxRetries}번 재시도 했지만 실패했습니다:`, error);
+        throw error;
+      }
+
+      retryCount++;
+
+      await wait(retryDelay);
+
+      continue;
     }
-
-    const data = await response.json();
-
-    return responseInterceptor ? responseInterceptor(data) : data;
-  } catch (error: unknown) {
-    if (error instanceof Error && error.name === "AbortError") {
-      throw new Error("요청이 취소되었습니다.");
-    }
-    throw error;
   }
 };
 
