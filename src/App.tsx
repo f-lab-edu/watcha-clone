@@ -1,5 +1,4 @@
-import PageLoading from "@Components/loading/PageLoading";
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
 const DetailMovie = lazy(() => import("./pages/DetailMovie"));
@@ -13,30 +12,9 @@ function App() {
         path="/"
         element={<Navigate to="/individual-purchase" replace />}
       />
-      <Route
-        path="/individual-purchase"
-        element={
-          <Suspense fallback={<PageLoading />}>
-            <IndividualPurchase />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/detail-movie/:id"
-        element={
-          <Suspense fallback={<PageLoading />}>
-            <DetailMovie />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/search"
-        element={
-          <Suspense fallback={<PageLoading />}>
-            <SearchList />
-          </Suspense>
-        }
-      />
+      <Route path="/individual-purchase" element={<IndividualPurchase />} />
+      <Route path="/detail-movie/:id" element={<DetailMovie />} />
+      <Route path="/search" element={<SearchList />} />
     </Routes>
   );
 }
