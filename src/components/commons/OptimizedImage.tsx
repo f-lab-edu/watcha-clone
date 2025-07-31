@@ -17,18 +17,13 @@ const OptimizedImage = ({
 }: OptimizedImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => setIsLoaded(true);
-  }, [src]);
-
   return (
     <img
       src={src}
       alt={alt}
       width={width}
       height={height}
+      onLoad={() => setIsLoaded(true)}
       loading="lazy"
       style={{
         ...style,
