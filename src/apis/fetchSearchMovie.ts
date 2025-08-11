@@ -19,6 +19,8 @@ const searchMovie = (title: string) =>
       query: title,
     },
     responseInterceptor: (res) => convertSnakeToCamel(res),
+    maxRetries: 5,
+    retryDelay: 2000,
   });
 
 export const useSearchMovieQuery = (title: string) =>
