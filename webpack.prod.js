@@ -24,25 +24,48 @@ module.exports = merge(commonConfig, {
   optimization: {
     minimize: true,
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
       minSize: 20000,
-      minRemainingSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 30,
-      maxInitialRequests: 30,
-      enforceSizeThreshold: 50000,
+      maxSize: 240000,
       cacheGroups: {
-        defaultVendors: {
+        vendor: {
           test: /[\\/]node_modules[\\/]/,
-          priority: -10,
+          name: 'vendors',
+          chunks: 'all',
+          priority: 10,
           reuseExistingChunk: true,
         },
-        default: {
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'react',
+          chunks: 'all',
+          priority: 20,
+          reuseExistingChunk: true,
+        },
+        icons: {
+          test: /[\\/]node_modules[\\/]react-icons[\\/]/,
+          name: 'icons',
+          chunks: 'all',
+          priority: 15,
+          reuseExistingChunk: true,
+        },
+        common: {
+          name: 'common',
           minChunks: 2,
-          priority: -20,
+          chunks: 'all',
+          priority: 5,
           reuseExistingChunk: true,
         },
       },
     },
+    usedExports: true,
+    sideEffects: false,
+  },
+  resolve: {
+    alias: {
+      'msw/node': false,
+      'msw/browser': false,
+      'msw': false,
+    }
   }
 });
