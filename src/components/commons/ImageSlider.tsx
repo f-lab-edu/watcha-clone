@@ -151,6 +151,10 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ movies }) => {
               <OptimizedImage
                 src={`${ImagePathForOriginal}${movie.poster_path}`}
                 alt={`슬라이드 이미지 ${index + 1}`}
+                fallbackSrc="/assets/default-poster.png"
+                enableLazyLoading={true}
+                lazyOffset={100}
+                enablePrefetch={true}
                 width={mainImageWidth}
                 height={mainImageHeight}
                 style={imageStyle}

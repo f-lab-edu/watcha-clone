@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
 import { Movie } from "@Types/Movie";
+import OptimizedImage from "./OptimizedImage";
 
 const ASPECT_RATIO = 16 / 9;
 const DEFAULT_IMAGE_WIDTH = 290;
@@ -191,10 +192,15 @@ const ImageSliderSmall: React.FC<ImageSliderSmallProps> = ({
               style={imageItemStyle(index)}
             >
               <a href={movie.poster_path} style={imageLinkStyle}>
-                <img
+                <OptimizedImage
                   src={`${ImagePathForOriginal}${movie.poster_path}`}
-                  style={imageStyle}
                   alt={`슬라이드 이미지 ${index + 1}`}
+                  width={itemWidth}
+                  height={itemHeight}
+                  enableLazyLoading={true}
+                  enablePrefetch={true}
+                  fallbackSrc="/assets/default-poster.png"
+                  style={imageStyle}
                 />
               </a>
             </div>
