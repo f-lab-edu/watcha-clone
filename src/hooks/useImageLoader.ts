@@ -10,7 +10,6 @@ interface UseImageLoaderProps {
   enablePrefetch?: boolean;
 }
 
-// 단순한 메모리 캐시 (URL 기반)
 const loadedImages = new Set<string>();
 
 export const useImageLoader = ({
@@ -20,17 +19,16 @@ export const useImageLoader = ({
   lazyOffset = 100,
   enablePrefetch = true,
 }: UseImageLoaderProps) => {
-  const [loadingState, setLoadingState] = useState<LoadingState>(() => 
+  const [loadingState, setLoadingState] = useState<LoadingState>(() =>
     loadedImages.has(src) ? "loaded" : "loading"
   );
-  const [currentSrc, setCurrentSrc] = useState<string>(() => 
+  const [currentSrc, setCurrentSrc] = useState<string>(() =>
     loadedImages.has(src) ? src : ""
   );
   const [isInView, setIsInView] = useState(!enableLazyLoading);
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
-  // Intersection Observer로 lazy loading 처리
   useEffect(() => {
     if (!enableLazyLoading || isInView) return;
 
@@ -55,11 +53,9 @@ export const useImageLoader = ({
     return () => observer.disconnect();
   }, [enableLazyLoading, isInView, lazyOffset]);
 
-  // 이미지 로딩 처리 (브라우저 네이티브 캐시 활용)
   useEffect(() => {
     if (!isInView) return;
 
-    // 이미 로드된 이미지면 즉시 표시
     if (loadedImages.has(src)) {
       setCurrentSrc(src);
       setLoadingState("loaded");
@@ -69,9 +65,8 @@ export const useImageLoader = ({
     let isCancelled = false;
     setLoadingState("loading");
 
-    // Image 객체로 프리로딩 (브라우저 캐시 활용)
     const img = new Image();
-    
+
     img.onload = () => {
       if (!isCancelled) {
         loadedImages.add(src);
@@ -102,7 +97,6 @@ export const useImageLoader = ({
     };
   }, [src, isInView, fallbackSrc]);
 
-  // 프리페치 처리
   useEffect(() => {
     if (!enablePrefetch || loadedImages.has(src)) return;
 
