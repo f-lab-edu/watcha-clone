@@ -24,25 +24,53 @@ module.exports = merge(commonConfig, {
   optimization: {
     minimize: true,
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
       minSize: 20000,
-      minRemainingSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 30,
-      maxInitialRequests: 30,
-      enforceSizeThreshold: 50000,
+      maxSize: 200000,
+      maxAsyncSize: 200000,
+      maxInitialSize: 200000,
       cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          reuseExistingChunk: true,
+        default: false,
+        vendors: false,
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'react',
+          chunks: 'all',
+          priority: 30,
+          enforce: true,
         },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
+        reactQuery: {
+          test: /[\\/]node_modules[\\/]@tanstack[\\/]/,
+          name: 'react-query',
+          chunks: 'async',
+          priority: 25,
+        },
+        icons: {
+          test: /[\\/]node_modules[\\/]react-icons[\\/]/,
+          name: 'icons',
+          chunks: 'async',
+          priority: 20,
+        },
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'async',
+          priority: 10,
+          minChunks: 1,
         },
       },
     },
+    usedExports: true,
+    sideEffects: false,
+  },
+  performance: {
+    hints: false,
+  },
+  resolve: {
+    alias: {
+      'msw/node': false,
+      'msw/browser': false,
+      'msw': false,
+    }
   }
 });

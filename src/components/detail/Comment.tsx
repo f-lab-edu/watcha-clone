@@ -11,7 +11,7 @@ const Comment = ({ comment }: CommentProps) => {
 
   const getRatingStars = (rating: number) => {
     const stars = [];
-    const roundedRating = Math.round(rating / 2); // 10점 만점을 5점 만점으로 변환
+    const roundedRating = Math.round(rating / 2);
 
     for (let i = 0; i < 5; i++) {
       stars.push(
@@ -23,11 +23,9 @@ const Comment = ({ comment }: CommentProps) => {
     return stars;
   };
 
-  // 프로필 이미지 경로 처리
   const getProfileImage = () => {
     if (!avatar_path) return "/avatar.png";
 
-    // TMDB API에서 가져온 이미지인 경우
     if (avatar_path.startsWith("/")) {
       return `${ImagePathForOriginal}${avatar_path}`;
     }

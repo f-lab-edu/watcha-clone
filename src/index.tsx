@@ -8,13 +8,16 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "@Components/commons/ErrorFallback";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter } from "react-router-dom";
-import "./mocks";
+
+if (process.env.NODE_ENV === "development") {
+  import("./mocks");
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      staleTime: 1000 * 60 * 5, // 5분
+      staleTime: 1000 * 60 * 5,
     },
   },
 });

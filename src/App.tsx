@@ -1,7 +1,9 @@
+import { lazy } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import IndividualPurchase from "./pages/IndividualPurchase";
-import DetailMovie from "./pages/DetailMovie";
-import SearchList from "./pages/SearchList";
+
+const DetailMovie = lazy(() => import("./pages/DetailMovie"));
+const IndividualPurchase = lazy(() => import("./pages/IndividualPurchase"));
+const SearchList = lazy(() => import("./pages/SearchList"));
 
 function App() {
   return (

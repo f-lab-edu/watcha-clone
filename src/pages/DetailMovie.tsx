@@ -3,9 +3,10 @@ import { TopHeader } from "@Components/commons/TopHeader";
 import { useParams } from "react-router-dom";
 import { getRunningTime } from "../utils/getRunningTime";
 import { CommentType } from "@Types/CommentType";
-import Comment from "@Components/detail/Comment";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { createCommentMutation, getCommentsQuery } from "../hooks/useComments";
+
+const Comment = lazy(() => import("@Components/detail/Comment"));
 
 const DetailMovie = () => {
   const { id = "" } = useParams();

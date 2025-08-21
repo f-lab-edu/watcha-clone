@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+import { Suspense, useCallback, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { ImagePathForOriginal } from "@Constants/ImagePath";
 import { Movie } from "@Types/Movie";
 import { useNavigate } from "react-router-dom";
+import OptimizedImage from "./OptimizedImage";
 
 const ASPECT_RATIO = 16 / 9;
 const DESKTOP_MAIN_IMAGE_WIDTH = 980;
@@ -147,10 +148,16 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ movies }) => {
               style={mainImageStyle}
               onClick={() => navigate(`/detail-movie/${movie.id}`)}
             >
-              <img
+              <OptimizedImage
                 src={`${ImagePathForOriginal}${movie.poster_path}`}
-                style={imageStyle}
                 alt={`슬라이드 이미지 ${index + 1}`}
+                fallbackSrc="/assets/default-poster.png"
+                enableLazyLoading={true}
+                lazyOffset={100}
+                enablePrefetch={true}
+                width={mainImageWidth}
+                height={mainImageHeight}
+                style={imageStyle}
               />
             </div>
           ))}

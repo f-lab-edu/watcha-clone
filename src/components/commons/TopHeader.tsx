@@ -1,5 +1,4 @@
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { CiSearch } from "react-icons/ci";
+import { IoIosNotificationsOutline, IoIosSearch } from "react-icons/io";
 import { WatchaLogo } from "@Assets/logo";
 import { useState } from "react";
 import { TopTabs } from "./TopTabs";
@@ -56,7 +55,7 @@ export const TopHeader = () => {
           }}
         >
           <div style={{ marginRight: "8px" }}>
-            <CiSearch size={24} />
+            <IoIosSearch size={24} />
           </div>
           <input
             type="text"
