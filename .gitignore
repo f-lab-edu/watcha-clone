@@ -154,3 +154,15 @@ tasks/
 
 # cursor
 .cursor
+
+# AWS configuration files (contain sensitive account info)
+distribution-config.json
+s3-*.json
+*.aws.json
+
+# AWS CLI cache
+.aws/
+
+# Allow docs folder to be committed
+!docs/
+

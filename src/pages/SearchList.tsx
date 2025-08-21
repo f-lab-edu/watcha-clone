@@ -49,7 +49,9 @@ const LoadingMessage = styled.div``;
 
 const SearchResultContent = () => {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("query") || "";
+  const query = (searchParams && typeof searchParams.get === 'function') 
+    ? searchParams.get("query") || ""
+    : "";
   const { data } = useSearchMovieQuery(query);
 
   if (!data?.results?.length)

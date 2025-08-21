@@ -8,7 +8,11 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "@Components/commons/ErrorFallback";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter } from "react-router-dom";
-import "./mocks";
+
+// 개발 환경에서만 MSW 로드
+if (process.env.NODE_ENV === "development") {
+  import("./mocks");
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
